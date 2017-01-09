@@ -1,0 +1,114 @@
+#common
+common.button.next=Next
+common.button.continue=Continue
+common.button.continueNextSection=Continue to next section
+common.button.continueFirstSection=Continue to first section
+common.button.continueThirdSection=Continue to Section 3
+common.button.snc=Save and continue
+common.button.delete=Delete
+common.button.sign-in=Sign in
+common.button.back=Back
+common.button.start=Start now
+common.button.findAddress=Find address
+common.button.checkAnswers=Check your answers
+common.errorSummary.label=The following errors were identified on this page.
+common.radioNoLabel=No
+common.radioYesLabel=Yes
+common.err.postcode.required=Please enter a valid postcode
+common.home=Home
+common.signInOut=Sign in/out
+common.feedbackFirst=This is a new service – your
+common.feedbackSecond=will help us to improve it.
+common.feedbackLinkText=feedback
+common.readMore=Read more
+common.error.fieldRequired=This field is required
+common.error.summary.heading=This page has errors
+common.readMore=Read more
+common.base.yes=Yes
+common.base.no=No
+common.day=Day
+common.month=Month
+common.year=Year
+common.base.change = Change
+common.base.remove = Remove
+error.required=This field is required
+common.pound = £
+common.notAvailable=None
+common.address.postcode=Postcode
+common.address.findUKAddress=Find UK address
+
+## Common date Messages ##
+common.date.fields.day=Day
+common.date.fields.month=Month
+common.date.fields.year=Year
+common.date.hint=For example, 4 9 2016
+common.externalLink=opens in a new window
+common.date.error.invalidDate=Enter a valid date
+common.date.hint.example= For example, 31 3 1980.
+common.date.error.invalidDate=Date must have a valid day, month and a year with 4 numbers
+
+##common section headings##
+common.section.progress.company.details.one=Section 1 of 5: Company details
+common.section.progress.company.details.two=Section 2 of 5: Previous schemes
+common.section.progress.company.details.three=Section 3 of 5: This investment
+common.section.progress.company.details.five=Section 5 of 5: Supporting documents
+common.section.progress.company.details.four=Section 4 of 5: Contact details
+
+## Session Timeout message ##
+session.timeout.message=Your session has ended
+session.timeout.startAgain=Start again
+
+#supporting documents page
+page.supportingDocuments.SupportingDocuments.title=Supporting documents
+page.supportingDocuments.SupportingDocuments.heading=Supporting documents
+page.supportingDocuments.SupportingDocuments.bullet.one=business plan
+page.supportingDocuments.SupportingDocuments.bullet.two=shareholder agreements or drafts
+page.supportingDocuments.SupportingDocuments.bullet.three=memorandum and articles of association
+page.supportingDocuments.SupportingDocuments.bullet.four=prospectuses and other documents for attracting investment
+page.supportingDocuments.SupportingDocuments.bullet.five=last annual accounts or cash flow forecast if you haven''t submitted accounts yet
+page.supportingDocuments.SupportingDocuments.text.one=If your documents aren''t up-to-date you should also tell us about any changes you''ll be making to them.
+page.supportingDocuments.SupportingDocuments.text.two=You can either upload your documents now, or after you have checked and submitted your application.
+page.supportingDocuments.SupportingDocuments.application.not.complete=Your application will not be complete until you send us these files
+page.supportingDocuments.SupportingDocuments.review=To support your application you''ll need to send us your company''s:
+page.supportingDocuments.SupportingDocuments.link=Continue without uploading
+
+## Common report error ##
+common.error.help.text=Get help with this page.
+common.error.summary.heading=This page has errors
+
+#file upload
+page.fileUpload.title=Upload your supporting documents
+page.fileUpload.heading=Upload your supporting documents
+page.fileUpload.desc=Use this section to unload documents to support your application
+page.fileUpload.restriction=You can only upload one at a time
+page.fileUpload.whattoupload=What to upload
+page.fileUpload.limit.amount=You can upload up to 5 documents
+page.fileUpload.limit.type=The documents must be PDF files
+page.fileUpload.limit.size=Each document must be less than five megabytes (5MB)
+page.fileUpload.limit.name=Each document must have a unique name
+page.fileUpload.options.heading=You can convert to a PDF by opening your document and selecting one of these
+page.fileUpload.options.save=Save as PDF
+page.fileUpload.options.print=Print to PDF
+page.fileUpload.options.export=Export as PDF
+page.fileUpload.table.heading=Your uploaded documents
+page.fileUpload.upload=Upload a Document
+page.fileUpload.upload.another=Upload another Document
+page.fileUpload.continue=Continue
+page.fileUpload.validation.size=Your PDF is over 5 megabytes in size
+page.fileUpload.validation.type=TEST TYPE
+page.fileUpload.validation.amount=TEST AMOUNT
+page.fileUpload.remove=Remove
+page.fileUpload.fileLimitReached=You''ve added 5 documents which is the limit.
+
+#file delete
+page.fileDelete.title=Confirm that you want to remove this document
+page.fileDelete.heading=Confirm that you want to remove this document
+page.fileDelete.hint=This will remove the document {0}
+page.fileDelete.confirm=Remove
+page.fileDelete.cancel=Cancel remove and go back
+
+## Feedback ##
+feedback.title = Feedback
+
+## Feedback Thank You ##
+feedback.thankyou.title = Feedback received
