@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.investmenttaxreliefattachmentsfrontend
+package config
 
 import play.api.Play.{configuration, current}
 import uk.gov.hmrc.play.config.ServicesConfig
@@ -24,17 +24,35 @@ trait AppConfig {
   val analyticsHost: String
   val reportAProblemPartialUrl: String
   val reportAProblemNonJSUrl: String
+  val notAuthorisedRedirectUrl: String
+  val ggSignInUrl: String
+  val ggSignOutUrl: String
+  val introductionUrl: String
+  val subscriptionUrl: String
+  val contactFormServiceIdentifier: String
+  val contactFrontendService: String
+  val signOutPageUrl: String
+  val attachmentsUrl: String
+  val fileUploadUrl: String
 }
 
 object FrontendAppConfig extends AppConfig with ServicesConfig {
 
   private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
-  private val contactHost = configuration.getString(s"contact-frontend.host").getOrElse("")
-  private val contactFormServiceIdentifier = "MyService"
-
   override lazy val analyticsToken = loadConfig(s"google-analytics.token")
   override lazy val analyticsHost = loadConfig(s"google-analytics.host")
-  override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+  override lazy val notAuthorisedRedirectUrl = configuration.getString("not-authorised-callback.url").getOrElse("")
+  override lazy val ggSignInUrl: String = configuration.getString(s"government-gateway-sign-in.host").getOrElse("")
+  override lazy val ggSignOutUrl: String = configuration.getString(s"government-gateway-sign-out.host").getOrElse("")
+  override lazy val introductionUrl: String = configuration.getString(s"introduction.url").getOrElse("")
+  override lazy val subscriptionUrl: String = loadConfig("investment-tax-relief-subscription.url")
+  override lazy val signOutPageUrl: String = configuration.getString(s"sign-out-page.url").getOrElse("")
+
+  override lazy val contactFrontendService = loadConfig("contact-frontend.url")
+  override val contactFormServiceIdentifier = "TAVC"
+  override lazy val reportAProblemPartialUrl = s"$contactFrontendService/problem_reports_ajax?service=$contactFormServiceIdentifier"
+  override lazy val reportAProblemNonJSUrl = s"$contactFrontendService/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+  override lazy val attachmentsUrl = baseUrl("investment-tax-relief-attachments")
+  override lazy val fileUploadUrl: String = loadConfig("file-upload.url")
 }
