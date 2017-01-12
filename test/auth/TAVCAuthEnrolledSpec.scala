@@ -59,7 +59,7 @@ class TAVCAuthEnrolledSpec extends UnitSpec with WithFakeApplication with Mockit
       val ggw = new GovernmentGatewayProvider(MockConfig.introductionUrl, MockConfig.ggSignInUrl)
       val timeoutHandler = ggw.handleSessionTimeout(fakeRequest)
       status(timeoutHandler) shouldBe SEE_OTHER
-      redirectLocation(timeoutHandler) shouldBe Some("/investment-tax-relief/session-timeout")
+      redirectLocation(timeoutHandler) shouldBe Some("/investment-tax-relief-attachments-frontend/session-timeout")
     }
   }
 
@@ -75,7 +75,7 @@ class TAVCAuthEnrolledSpec extends UnitSpec with WithFakeApplication with Mockit
 
       val result = AuthEnrolledTestController.authorisedAsyncAction(fakeRequest)
       status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result) shouldBe Some(s"/gg/sign-in?continue=${URLEncoder.encode(MockConfig.introductionUrl)}&origin=investment-tax-relief-submission-frontend&accountType=organisation")
+      redirectLocation(result) shouldBe Some(s"/gg/sign-in?continue=${URLEncoder.encode(MockConfig.introductionUrl)}&origin=investment-tax-relief-attachments-frontend&accountType=organisation")
     }
   }
 
