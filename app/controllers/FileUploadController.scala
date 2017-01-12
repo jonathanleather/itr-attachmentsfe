@@ -19,16 +19,17 @@ package controllers
 import utils.MultipartFormDataParser._
 import config.FrontendGlobal.internalServerErrorTemplate
 import auth.AuthorisedAndEnrolledForTAVC
+import common.KeystoreKeys
 import config.{FrontendAppConfig, FrontendAuthConnector}
-import connectors.EnrolmentConnector
+import connectors.{EnrolmentConnector, KeystoreConnector, S4LConnector}
 import play.api.data.FormError
 import play.api.i18n.Messages
-import play.api.mvc.{Action, MultipartFormData}
+import play.api.mvc.{Action, MultipartFormData, Result}
 import play.api.mvc.BodyParsers.parse._
 import services.FileUploadService
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.Transformers
-import views.html.fileUpload.{FileUpload, checkAnswersTemp}
+import views.html.fileUpload.FileUpload
 
 import scala.concurrent.Future
 
@@ -37,26 +38,46 @@ object FileUploadController extends FileUploadController {
   override lazy val authConnector = FrontendAuthConnector
   override lazy val enrolmentConnector = EnrolmentConnector
   override lazy val fileUploadService = FileUploadService
+  val keyStoreConnector: KeystoreConnector = KeystoreConnector
 }
 
 trait FileUploadController extends FrontendController with AuthorisedAndEnrolledForTAVC {
 
   val fileUploadService: FileUploadService
+  val keyStoreConnector: KeystoreConnector
 
-  val show = AuthorisedAndEnrolled.async { implicit user => implicit request =>
+  def show(continueUrl: Option[String]) = AuthorisedAndEnrolled.async { implicit user => implicit request =>
+
+    if(continueUrl.nonEmpty) {
+      keyStoreConnector.saveFormData(KeystoreKeys.continueUrl, continueUrl)
+    }
+
     for {
+      savedUrl <-  keyStoreConnector.fetchAndGetFormData[String](KeystoreKeys.continueUrl)
       envelopeID <- fileUploadService.getEnvelopeID()
       files <- fileUploadService.getEnvelopeFiles(envelopeID)
-    } yield (envelopeID, files) match {
-      case (_, _) if envelopeID.nonEmpty => Ok(FileUpload(files, envelopeID))
-      case (_, _) => InternalServerError(internalServerErrorTemplate)
+    } yield (envelopeID, files, savedUrl) match {
+      case (_,_, None) if continueUrl.fold("")(_.toString).length == 0 => BadRequest("Required Continue Url not passsed")
+      case (_,_, Some(url)) if url.length == 0 && continueUrl.fold("")(_.toString).length == 0 => BadRequest("Required Continue Url not passsed")
+      case (_, _,_) if envelopeID.nonEmpty => Ok(FileUpload(files, envelopeID))
+      case (_, _,_) => InternalServerError(internalServerErrorTemplate)
     }
   }
 
   val submit = AuthorisedAndEnrolled.async { implicit user => implicit request =>
-    //TODO: naviafte to successUrl passed which for now would eb the check answers page
-    // Future.successful(Redirect(routes.CheckAnswersController.show()))
-    Future.successful(Ok(checkAnswersTemp()))
+    def routeRequest(url: Option[String]): Future[Result] = {
+      url match {
+        case Some(url) if (url.length > 0) => {
+          Future.successful(Redirect(url))
+        }
+        case _ => Future.successful(InternalServerError(internalServerErrorTemplate))
+      }
+    }
+
+    for {
+      continueUrl <-  keyStoreConnector.fetchAndGetFormData[String](KeystoreKeys.continueUrl)
+      route <- routeRequest(continueUrl)
+    } yield route
   }
 
   def upload: Action[MultipartFormData[Array[Byte]]] = Action.async(multipartFormData(multipartFormDataParser)) {

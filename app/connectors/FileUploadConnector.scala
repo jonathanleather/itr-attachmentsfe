@@ -15,9 +15,6 @@
  */
 
 package connectors
-
-import java.io.File
-
 import utils.MultipartFormDataWriteable._
 import config.FrontendAppConfig
 import play.api.libs.ws.{WS, WSResponse}

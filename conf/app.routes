@@ -1,7 +1,5 @@
 # microservice specific routes
 
-GET        /hello-world             uk.gov.hmrc.investmenttaxreliefattachmentsfrontend.controllers.HelloWorld.helloWorld
-
 GET        /assets/*file            controllers.Assets.at(path="/public", file)
 
 #Session Timeout route
@@ -12,9 +10,12 @@ GET         /session-timeout         controllers.TimeoutController.timeout
 
 #File upload Routes
 #####################################################################################################################
-GET        /file-upload                             controllers.FileUploadController.show
+GET        /file-upload                              controllers.FileUploadController.show(continueUrl: Option[String]?=None)
 POST       /file-upload                             controllers.FileUploadController.upload
 POST       /upload-file                             controllers.FileUploadController.submit
+
+
+#Future.successful(Redirect(s"${applicationConfig.ggSignOutUrl}?continue=${applicationConfig.signOutPageUrl}"))
 
 GET        /delete-file/:fileID                     controllers.FileDeleteController.show(fileID: String)
 POST       /delete-file                             controllers.FileDeleteController.submit

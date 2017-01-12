@@ -29,7 +29,7 @@ import scala.concurrent.{ExecutionContext, Future}
 object FileUploadService extends FileUploadService {
   override lazy val fileUploadConnector = FileUploadConnector
   override lazy val s4lConnector = S4LConnector
-  override lazy val submissionConnector = AttachmentsConnector
+  override lazy val attachmentsConnector = AttachmentsConnector
 }
 
 trait FileUploadService {
@@ -39,7 +39,7 @@ trait FileUploadService {
 
   val fileUploadConnector: FileUploadConnector
   val s4lConnector: S4LConnector
-  val submissionConnector: AttachmentsConnector
+  val attachmentsConnector: AttachmentsConnector
 
   def validateFile(envelopeID: String, fileName: String, fileSize: Int)
                   (implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Seq[Boolean]] = {
@@ -74,7 +74,7 @@ trait FileUploadService {
     s4lConnector.fetchAndGetFormData[String](KeystoreKeys.envelopeID).flatMap {
       case Some(envelopeID) if envelopeID.nonEmpty => Future.successful(envelopeID)
       case _ if createNewID =>
-        submissionConnector.createEnvelope().map {
+        attachmentsConnector.createEnvelope().map {
           result =>
             val envelopeID = result.json.\("envelopeID").as[String]
             s4lConnector.saveFormData(KeystoreKeys.envelopeID, envelopeID)
@@ -84,7 +84,7 @@ trait FileUploadService {
     }
 
   def checkEnvelopeStatus(envelopeID: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Option[Envelope]] = {
-    submissionConnector.getEnvelopeStatus(envelopeID).map {
+    attachmentsConnector.getEnvelopeStatus(envelopeID).map {
       result => result.status match {
         case OK => result.json.asOpt[Envelope]
         case _ => Logger.warn(s"[FileUploadConnector][checkEnvelopeStatus] Error ${result.status} received.")
@@ -116,7 +116,7 @@ trait FileUploadService {
     getEnvelopeID(createNewID = false).flatMap {
       envelopeID => if (envelopeID.nonEmpty)
         addMetadataFile(envelopeID, tavcRef).flatMap[HttpResponse] {
-          case true => submissionConnector.closeEnvelope(envelopeID).map {
+          case true => attachmentsConnector.closeEnvelope(envelopeID).map {
             result => result.status match {
               case OK =>
                 s4lConnector.saveFormData(KeystoreKeys.envelopeID, "")
@@ -141,7 +141,7 @@ trait FileUploadService {
   def deleteFile(fileID: String)(implicit hc: HeaderCarrier, ex: ExecutionContext, user: TAVCUser): Future[HttpResponse] =
     getEnvelopeID(createNewID = false).flatMap {
       case envelopeID if envelopeID.nonEmpty =>
-        submissionConnector.deleteFile(envelopeID, fileID).map {
+        attachmentsConnector.deleteFile(envelopeID, fileID).map {
           result => result.status match {
             case OK => result
             case _ =>  Logger.warn(s"[FileUploadConnector][deleteFile] Error deleting file. Status ${result.status} received.")
@@ -152,7 +152,7 @@ trait FileUploadService {
     }
 
   private def generateFileID(envelopeID: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Int] = {
-    submissionConnector.getEnvelopeStatus(envelopeID).map {
+    attachmentsConnector.getEnvelopeStatus(envelopeID).map {
       result =>
         val envelope = result.json.as[Envelope]
         if (envelope.files.isDefined)

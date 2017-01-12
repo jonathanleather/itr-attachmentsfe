@@ -14,20 +14,28 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.investmenttaxreliefattachmentsfrontend.controllers
+package auth
 
+import connectors.EnrolmentConnector
+import org.scalatest.mock.MockitoSugar
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import play.api.mvc._
 
 import scala.concurrent.Future
-import play.api.Play.current
-import views.html.helloworld.hello_world
 
+object AuthEnrolledTestController extends AuthEnrolledTestController with MockitoSugar {
+  override lazy val applicationConfig = mockConfig
+  override lazy val authConnector = mockAuthConnector
+  override lazy val enrolmentConnector = mock[EnrolmentConnector]
+}
 
-object HelloWorld extends HelloWorld
+trait AuthEnrolledTestController extends FrontendController with AuthorisedAndEnrolledForTAVC {
 
-trait HelloWorld extends FrontendController {
-  val helloWorld = Action.async { implicit request =>
-    Future.successful(Ok(hello_world()))
+  val authorisedAsyncAction = AuthorisedAndEnrolled.async {
+    implicit user =>  implicit request => Future.successful(Ok)
   }
+
+  val authorisedAction = AuthorisedAndEnrolled {
+    implicit user =>  implicit request => Ok
+  }
+
 }

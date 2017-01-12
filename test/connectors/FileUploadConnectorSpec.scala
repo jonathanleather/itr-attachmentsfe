@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package utils
+package connectors
 
-import java.text.NumberFormat
+import config.FrontendAppConfig
+import org.scalatest.mock.MockitoSugar
 
-import common.Constants
+import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
-trait CostFormatter {
+class FileUploadConnectorSpec extends UnitSpec with WithFakeApplication with MockitoSugar {
 
-  def getOperatingAndRDCostsAsFormattedString(value: String, taxYear: String): String= {
-    val transformedValue = Transformers.integerToFormattedNumber(value.toInt)
-    Constants.taxYearFormattedAnswer(transformedValue,taxYear)
+  "FileUploadConnector" should {
+
+    "Use the service url from app config" in {
+      FileUploadConnector.serviceURL shouldBe FrontendAppConfig.fileUploadUrl
+    }
+
   }
 
-  def getAmountAsFormattedString(value: Int): String = {
-    val transformedValue = Transformers.integerToFormattedNumber(value)
-    Constants.amountFormattedAnswer(transformedValue)
-  }
 }
