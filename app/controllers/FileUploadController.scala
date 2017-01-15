@@ -24,12 +24,13 @@ import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.{EnrolmentConnector, KeystoreConnector, S4LConnector}
 import play.api.data.FormError
 import play.api.i18n.Messages
-import play.api.mvc.{Action, MultipartFormData, Result}
+import play.api.mvc.{Action, AnyContent, MultipartFormData, Result}
 import play.api.mvc.BodyParsers.parse._
 import services.FileUploadService
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.Transformers
 import views.html.fileUpload.FileUpload
+import play.api.libs.json._
 
 import scala.concurrent.Future
 
@@ -103,7 +104,15 @@ trait FileUploadController extends FrontendController with AuthorisedAndEnrolled
         case false => Future.successful(Redirect(routes.FileUploadController.show()))
       }
   }
+  
+  def closeEnvelope(tavcRef: String): Action[AnyContent] = AuthorisedAndEnrolled.async { implicit user => implicit request =>
 
+    fileUploadService.closeEnvelope(tavcRef).map {
+      responseReceived =>
+        Status(responseReceived.status)(responseReceived.body)
+    }
+
+  }
   private def generateFormErrors(errors: Seq[Boolean]): Seq[FormError] = {
     val messages = Seq(
       "duplicate-name" -> Messages("page.fileUpload.limit.name"),
