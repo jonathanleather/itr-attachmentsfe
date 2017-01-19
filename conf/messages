@@ -112,3 +112,8 @@ feedback.title = Feedback
 
 ## Feedback Thank You ##
 feedback.thankyou.title = Feedback received
+
+#signout page for attachments
+page.signout.SignedOut.title = You''re signed out
+page.signout.SignedOut.header = You''re signed out
+page.signout.SignedOut.explore = Explore GOV.UK
