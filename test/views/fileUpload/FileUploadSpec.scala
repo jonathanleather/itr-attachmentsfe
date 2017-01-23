@@ -26,12 +26,12 @@ import views.html.fileUpload.FileUpload
 class FileUploadSpec extends ViewSpec {
 
   val envelopeID = "00000000-0000-0000-0000-000000000000"
+  val backUrl = "http://test/back"
 
   "The FileUpload page" should {
 
     "contain the correct elements when loaded with no files" in {
-
-      lazy val page = FileUpload(Seq(), envelopeID)(fakeRequest)
+      lazy val page = FileUpload(Seq(), envelopeID,backUrl)(fakeRequest)
       lazy val document = Jsoup.parse(contentAsString(page))
 
       //title and heading
@@ -44,6 +44,9 @@ class FileUploadSpec extends ViewSpec {
       document.body.getElementById("supporting-docs-three").text() shouldBe Messages("page.supportingDocuments.SupportingDocuments.bullet.three")
       document.body.getElementById("supporting-docs-four").text() shouldBe Messages("page.supportingDocuments.SupportingDocuments.bullet.four")
       document.body.getElementById("supporting-docs-five").text() shouldBe Messages("page.supportingDocuments.SupportingDocuments.bullet.five")
+
+      document.body.getElementById("back-link").attr("href") shouldEqual backUrl
+      document.body.getElementById("progress-section").text shouldBe Messages("common.section.progress.company.details.five")
 
 
       document.body.getElementById("main-heading").text() shouldBe Messages("page.fileUpload.heading")
@@ -66,14 +69,12 @@ class FileUploadSpec extends ViewSpec {
        //Dynamic button
       document.body.getElementById("upload-button").text() shouldBe Messages("page.fileUpload.upload")
 
-      document.body.getElementById("continue-link").text() shouldBe Messages("page.fileUpload.continue")
-//
-      //document.body.getElementById("progress-section").text shouldBe Messages("common.section.progress.company.details.five")
+
     }
 
     "contain the correct elements when loaded with one or more files" in {
 
-      lazy val page = FileUpload(files, envelopeID)(fakeRequest)
+      lazy val page = FileUpload(files, envelopeID,"http://test/back")(fakeRequest)
       lazy val document = Jsoup.parse(contentAsString(page))
 
       //title and heading
@@ -87,6 +88,8 @@ class FileUploadSpec extends ViewSpec {
       document.body.getElementById("supporting-docs-four").text() shouldBe Messages("page.supportingDocuments.SupportingDocuments.bullet.four")
       document.body.getElementById("supporting-docs-five").text() shouldBe Messages("page.supportingDocuments.SupportingDocuments.bullet.five")
 
+      document.body.getElementById("back-link").attr("href") shouldEqual backUrl
+      document.body.getElementById("progress-section").text shouldBe Messages("common.section.progress.company.details.five")
 
       document.body.getElementById("main-heading").text() shouldBe Messages("page.fileUpload.heading")
       document.body.getElementById("file-upload-desc").text() shouldBe Messages("page.fileUpload.desc")
@@ -115,7 +118,7 @@ class FileUploadSpec extends ViewSpec {
 
     "contain the correct elements when loaded with 5 files" in {
 
-      lazy val page = FileUpload(maxFiles, envelopeID)(fakeRequest)
+      lazy val page = FileUpload(maxFiles, envelopeID, "http://test/back")(fakeRequest)
       lazy val document = Jsoup.parse(contentAsString(page))
 
       //title and heading

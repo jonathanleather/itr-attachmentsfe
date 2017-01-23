@@ -22,6 +22,7 @@ trait KeystoreKeys {
 
   // processing Keys
   val continueUrl: String = "processing:continueUrl"
+  val backUrl: String = "processing:backUrl"
 
   // registration keys
   val registrationDetails: String = "registration:registrationDetails"
