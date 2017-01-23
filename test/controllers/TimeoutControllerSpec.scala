@@ -16,21 +16,14 @@
 
 package controllers
 
-import config.FrontendAppConfig
-import views.html.warnings._
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import helpers.ControllerSpec
+import play.api.test.Helpers._
 
-import scala.concurrent.Future
+class TimeoutControllerSpec extends ControllerSpec {
 
-object TimeoutController extends TimeoutController{
-  override lazy val introductionUrl = FrontendAppConfig.introductionUrl
-}
-
-trait TimeoutController extends FrontendController {
-
-  val introductionUrl:String
-  def timeout:Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(sessionTimeout(introductionUrl)))
+  "Sending a GET request to TimeoutController" should {
+    "return a 200" in {
+      status(TimeoutController.timeout(fakeRequest)) shouldBe OK
+    }
   }
 }

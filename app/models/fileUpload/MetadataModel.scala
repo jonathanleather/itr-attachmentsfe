@@ -47,6 +47,7 @@ case class MetadataModel(envelopeID: String, tavcRef: String) {
     |  <document>
     |    <header>
     |      <format>pdf</format>
+    |      <mime_type>application/pdf</mime_type>
     |      <source>tavc</source>
     |      <target>CFS</target>
     |      <reconciliation_id>$envelopeID</reconciliation_id>

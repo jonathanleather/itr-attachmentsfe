@@ -165,7 +165,7 @@ trait FileUploadService {
   private def addMetadataFile(envelopeID: String, tavcRef: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Boolean] = {
     generateFileID(envelopeID).flatMap {
       fileID =>
-        fileUploadConnector.addFileContent(envelopeID, fileID, s"$envelopeID.xml", MetadataModel(envelopeID, tavcRef).getControlFile, XML).map {
+        fileUploadConnector.addFileContent(envelopeID, fileID, s"$envelopeID-metadata.xml", MetadataModel(envelopeID, tavcRef).getControlFile, XML).map {
           result => result.status match {
             case OK => true
             case _ => Logger.warn(s"[FileUploadConnector][addMetadataFile] Error creating metadata. Response ${result.status} received.")

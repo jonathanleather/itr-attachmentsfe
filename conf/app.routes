@@ -10,7 +10,7 @@ GET         /session-timeout         controllers.TimeoutController.timeout
 
 #File upload Routes
 #####################################################################################################################
-GET        /file-upload                             controllers.FileUploadController.show(continueUrl: Option[String]?=None)
+GET        /file-upload                             controllers.FileUploadController.show(continueUrl: Option[String]?=None, backUrl: Option[String]?=None)
 POST       /file-upload                             controllers.FileUploadController.upload
 POST       /upload-file                             controllers.FileUploadController.submit
 POST       /:tavcRef/close-envelope                 controllers.FileUploadController.closeEnvelope(tavcRef: String)
