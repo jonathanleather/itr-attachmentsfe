@@ -86,10 +86,10 @@ page.fileUpload.limit.amount=You can upload up to 5 documents
 page.fileUpload.limit.type=The documents must be PDF files
 page.fileUpload.limit.size=Each document must be less than five megabytes (5MB)
 page.fileUpload.limit.name=Each document must have a unique name
-page.fileUpload.options.heading=You can convert to a PDF by opening your document and selecting one of these
-page.fileUpload.options.save=Save as PDF
-page.fileUpload.options.print=Print to PDF
-page.fileUpload.options.export=Export as PDF
+page.fileUpload.options.heading=You can convert to a PDF by opening your document and selecting one of these:
+page.fileUpload.options.save=save as PDF
+page.fileUpload.options.print=print to PDF
+page.fileUpload.options.export=export as PDF
 page.fileUpload.table.heading=Your uploaded documents
 page.fileUpload.upload=Upload a Document
 page.fileUpload.upload.another=Upload another Document
@@ -98,7 +98,7 @@ page.fileUpload.validation.size=Your PDF is over 5 megabytes in size
 page.fileUpload.validation.type=TEST TYPE
 page.fileUpload.validation.amount=TEST AMOUNT
 page.fileUpload.remove=Remove
-page.fileUpload.fileLimitReached=You''ve added 5 documents which is the limit.
+page.fileUpload.fileLimitReached=You have uploaded 5 files.
 
 #file delete
 page.fileDelete.title=Confirm that you want to remove this document

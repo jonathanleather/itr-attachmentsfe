@@ -56,7 +56,7 @@
         </div>
 
         @if(files.size > 0){
-            <div class="form-group bordered-box">
+            <div class="form-group">
                 <table id="files-table">
                     <thead>
                     <tr>
@@ -96,7 +96,7 @@
         }
         } else {
             <div class="form-group">
-                <p id="file-limit-reached">@Messages("page.fileUpload.fileLimitReached")</p>
+                <p class="indent" id="file-limit-reached">@Messages("page.fileUpload.fileLimitReached")</p>
             </div>
 
             @form(action = routes.FileUploadController.submit()) {
