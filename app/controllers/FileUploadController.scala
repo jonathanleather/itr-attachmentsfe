@@ -65,17 +65,6 @@ trait FileUploadController extends FrontendController with AuthorisedAndEnrolled
         }
       }
 
-
-      def processQueryStringc(cUrl:String, bUrl:String) = {
-        if (cUrl.length > 0) {
-          keyStoreConnector.saveFormData(KeystoreKeys.continueUrl, cUrl)
-        }
-
-        if (bUrl.length > 0) {
-          keyStoreConnector.saveFormData(KeystoreKeys.backUrl, bUrl)
-        }
-      }
-
       processQueryString(urlContinue, urlBack)
 
       for {

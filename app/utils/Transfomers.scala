@@ -22,41 +22,6 @@ import scala.util.{Failure, Success, Try}
 
 object Transformers {
 
-  val stringToBigDecimal: String => BigDecimal = (input) => Try(BigDecimal(input.trim)) match {
-    case Success(value) => value
-    case Failure(_) => BigDecimal(0)
-  }
-
-  val bigDecimalToString: BigDecimal => String = (input) => input.scale match {
-    case 1 => input.setScale(2).toString()
-    case _ => input.toString
-  }
-
-  val stringToInteger: String => Int = (input) => Try(input.trim.toInt) match {
-    case Success(value) => value
-    case Failure(_) => 0
-  }
-
-  val stringToBoolean: String => Boolean = {
-    case "Yes" => true
-    case _ => false
-  }
-
-  val booleanToString: Boolean => String = (input) => if (input) "Yes" else "No"
-
-  val integerToFormattedNumber: Int => String = {
-    (value) => NumberFormat.getNumberInstance.format(value)
-  }
-
-
-  def poundToPence(pounds: Either[String, Int]): String = {
-    pounds match {
-      case Left(pounds) => pounds ++ "00"
-      case Right(pounds) => (pounds * 100).toString
-    }
-  }
-
-
   def errorBuilder(errors: Seq[(String, String)]): Seq[FormError] = {
     errors.map {
       case (key, message) => FormError(key, message)
