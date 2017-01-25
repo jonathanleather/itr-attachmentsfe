@@ -16,15 +16,18 @@
 
 package controllers.helpers
 
-import auth.{Enrolment, Identifier}
+import auth.{TAVCUser, Enrolment, Identifier, ggUser}
 import org.mockito.Matchers
 import org.mockito.Mockito._
+import org.scalatestplus.play.OneAppPerSuite
 import uk.gov.hmrc.play.http.HeaderCarrier
-
 import scala.concurrent.Future
+import play.api.Play.current
 
-trait ControllerSpec extends BaseSpec {
+trait ControllerSpec extends BaseSpec with OneAppPerSuite{
+
   val tavcReferenceId = "XATAVC000123456"
+
   def mockEnrolledRequest(): Unit = {
     when(mockEnrolmentConnector.getTAVCEnrolment(Matchers.any())(Matchers.any()))
       .thenReturn(Future.successful(Option(Enrolment("HMRC-TAVC-ORG", Seq(Identifier("TavcReference", "1234")), "Activated"))))
@@ -36,6 +39,5 @@ trait ControllerSpec extends BaseSpec {
     .thenReturn(Future.successful(None))
 
   implicit val hc = HeaderCarrier()
-
-
+  implicit val user = TAVCUser(ggUser.allowedAuthContext)
 }
