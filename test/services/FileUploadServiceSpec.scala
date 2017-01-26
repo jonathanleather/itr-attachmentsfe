@@ -46,6 +46,8 @@ class FileUploadServiceSpec extends UnitSpec with MockitoSugar with WithFakeAppl
   implicit val hc = HeaderCarrier()
   implicit val user = TAVCUser(ggUser.allowedAuthContext)
   val tavcReferenceId = "XATAVC000123456"
+  val oid = "00000001-0000-0000-0000-000000000000"
+
 
   val envelopeStatusResponse = Json.parse(s"""{
   |  "id": "$envelopeID",
@@ -337,25 +339,9 @@ class FileUploadServiceSpec extends UnitSpec with MockitoSugar with WithFakeAppl
 
   "closeEnvelope" when {
 
-//    "getEnvelopeID returns a non-empty envelope ID, addMetadataFile returns OK and closeEnvelope returns OK" should {
-//
-//      lazy val result = TestService.closeEnvelope(tavcReferenceId)
-//
-//      "return the http response" in {
-//        when(mockS4LConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.envelopeID))(Matchers.any(), Matchers.any(), Matchers.any()))
-//          .thenReturn(Future.successful(Some(envelopeID)))
-//        when(mockFileUploadConnector.addFileContent(Matchers.eq(envelopeID), Matchers.any(), Matchers.eq(s"$envelopeID-metatdata.xml"), Matchers.any(),
-//          Matchers.eq(TestService.XML))(Matchers.any())).thenReturn(Future.successful(FakeWSResponse(OK)))
-//        when(mockAttachmentsConnector.closeEnvelope(Matchers.eq(envelopeID))(Matchers.any()))
-//          .thenReturn(Future.successful(HttpResponse(OK)))
-//        await(result).status shouldBe OK
-//      }
-//
-//    }
-
     "getEnvelopeID returns a non-empty envelope ID, addMetadataFile returns OK and closeEnvelope returns non OK" should {
 
-      lazy val result = TestService.closeEnvelope(tavcReferenceId)
+      lazy val result = TestService.closeEnvelope(tavcReferenceId, envelopeID, oid)
 
       "return the http response" in {
         when(mockS4LConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.envelopeID))(Matchers.any(), Matchers.any(), Matchers.any()))
@@ -371,7 +357,7 @@ class FileUploadServiceSpec extends UnitSpec with MockitoSugar with WithFakeAppl
 
     "getEnvelopeID returns a non-empty envelope ID, addMetadataFile returns non OK" should {
 
-      lazy val result = TestService.closeEnvelope(tavcReferenceId)
+      lazy val result = TestService.closeEnvelope(tavcReferenceId, envelopeID, oid)
 
       "return the http response" in {
         when(mockS4LConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.envelopeID))(Matchers.any(), Matchers.any(), Matchers.any()))
@@ -379,18 +365,6 @@ class FileUploadServiceSpec extends UnitSpec with MockitoSugar with WithFakeAppl
         when(mockFileUploadConnector.addFileContent(Matchers.eq(envelopeID), Matchers.any(), Matchers.eq(s"$envelopeID-metadata.xml"), Matchers.any(),
           Matchers.eq(TestService.XML))(Matchers.any())).thenReturn(Future.successful(FakeWSResponse(INTERNAL_SERVER_ERROR)))
         await(result).status shouldBe INTERNAL_SERVER_ERROR
-      }
-
-    }
-
-    "getEnvelopeID returns an empty envelope ID" should {
-
-      lazy val result = TestService.closeEnvelope(tavcReferenceId)
-
-      "return an INTERNAL_SERVER_ERROR" in {
-        when(mockS4LConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.envelopeID))(Matchers.any(), Matchers.any(), Matchers.any()))
-          .thenReturn(Future.successful(Some("")))
-        await(result).status shouldBe OK
       }
 
     }

@@ -13,7 +13,6 @@ GET         /session-timeout         controllers.TimeoutController.timeout
 GET        /file-upload                             controllers.FileUploadController.show(continueUrl: Option[String]?=None, backUrl: Option[String]?=None)
 POST       /file-upload                             controllers.FileUploadController.upload
 POST       /upload-file                             controllers.FileUploadController.submit
-POST       /:tavcRef/close-envelope                 controllers.FileUploadController.closeEnvelope(tavcRef: String)
 
 #Future.successful(Redirect(s"${applicationConfig.ggSignOutUrl}?continue=${applicationConfig.signOutPageUrl}"))
 

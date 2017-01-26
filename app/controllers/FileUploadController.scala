@@ -21,8 +21,7 @@ import config.FrontendGlobal.internalServerErrorTemplate
 import auth.AuthorisedAndEnrolledForTAVC
 import common.KeystoreKeys
 import config.{FrontendAppConfig, FrontendAuthConnector}
-import connectors.{EnrolmentConnector, KeystoreConnector, S4LConnector}
-import models.fileUpload.Envelope
+import connectors.{EnrolmentConnector, KeystoreConnector}
 import play.api.data.FormError
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MultipartFormData, Result}
@@ -49,13 +48,14 @@ trait FileUploadController extends FrontendController with AuthorisedAndEnrolled
   val fileUploadService: FileUploadService
   val keyStoreConnector: KeystoreConnector
 
-  def show(continueUrl: Option[String], backUrl: Option[String]) : Action[AnyContent]  = AuthorisedAndEnrolled.async {
+  def show(continueUrl: Option[String], backUrl: Option[String]): Action[AnyContent] = AuthorisedAndEnrolled.async {
     implicit user => implicit request =>
 
       val urlBack = backUrl.fold("")(_.toString)
       val urlContinue = continueUrl.fold("")(_.toString)
 
       def processQueryString(cUrl:String, bUrl:String) = {
+
         if (cUrl.length > 0) {
           keyStoreConnector.saveFormData(KeystoreKeys.continueUrl, cUrl)
         }
@@ -83,11 +83,11 @@ trait FileUploadController extends FrontendController with AuthorisedAndEnrolled
   }
 
   val submit = AuthorisedAndEnrolled.async { implicit user => implicit request =>
-    def routeRequest(url: Option[String]): Future[Result] = {
+    def routeRequest(url: Option[String], envelopeId: String): Future[Result] = {
       url match {
         case Some(data) if data.length > 0 => {
           keyStoreConnector.clearKeystore()
-          Future.successful(Redirect(data))
+          Future.successful(Redirect(s"$data?envelopeId=$envelopeId"))
         }
         case _ => {
           keyStoreConnector.clearKeystore()
@@ -97,8 +97,10 @@ trait FileUploadController extends FrontendController with AuthorisedAndEnrolled
     }
 
     for {
-      continueUrl <-  keyStoreConnector.fetchAndGetFormData[String](KeystoreKeys.continueUrl)
-      route <- routeRequest(continueUrl)
+      continueUrl <- keyStoreConnector.fetchAndGetFormData[String](KeystoreKeys.continueUrl)
+      envelopeId <- FileUploadService.getEnvelopeID(false)
+      route <- routeRequest(continueUrl, envelopeId)
+
     } yield route
   }
 
@@ -134,12 +136,12 @@ trait FileUploadController extends FrontendController with AuthorisedAndEnrolled
       }
   }
 
-  def closeEnvelope(tavcRef: String): Action[AnyContent] = AuthorisedAndEnrolled.async { implicit user => implicit request =>
-    fileUploadService.closeEnvelope(tavcRef).map {
-      responseReceived =>
-        Status(responseReceived.status)(responseReceived.body)
-    }
-  }
+//  def closeEnvelope(tavcRef: String, envelopeId: String, id: String): Action[AnyContent] = Action.async { implicit request =>
+//    fileUploadService.closeEnvelope(tavcRef, envelopeId, id).map {
+//      responseReceived =>
+//        Status(responseReceived.status)(responseReceived.body)
+//    }
+//  }
 
   private def generateFormErrors(errors: Seq[Boolean]): Seq[FormError] = {
     val messages = Seq(
