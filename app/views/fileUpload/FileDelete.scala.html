@@ -1,12 +1,14 @@
 @import uk.gov.hmrc.play.views.html.helpers.{form}
+@import views.html.helpers.backButtonWithProgress
 
 @(fileID: String, fileName: String)(implicit request: Request[_])
 
 @main_template(Messages("page.fileDelete.title")) {
+@backButtonWithProgress(controllers.routes.FileUploadController.show().url, Messages("common.section.progress.company.details.five"))
 
 <h1 id="main-heading" class="form-title heading-xlarge">@Messages("page.fileDelete.heading")</h1>
 
-    @form(action = controllers.routes.FileDeleteController.submit()){
+        @form(action = controllers.routes.FileDeleteController.submit()){
 
         <div class="panel panel-border-wide">
             <p id="file-delete-hint">@Messages("page.fileDelete.hint",fileName)</p>

@@ -36,6 +36,10 @@ trait S4LConnector {
     shortLivedCache.cache[T](user.authContext.user.oid, key, data)
   }
 
+  def saveFormData[T](id: String, key: String, data : T)(implicit hc: HeaderCarrier, format: Format[T]): Future[CacheMap] = {
+    shortLivedCache.cache[T](id, key, data)
+  }
+
   def fetchAndGetFormData[T](key : String)(implicit hc: HeaderCarrier, format: Format[T], user: TAVCUser): Future[Option[T]] = {
     shortLivedCache.fetchAndGetEntry(user.authContext.user.oid, key)
   }

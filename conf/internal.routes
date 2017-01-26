@@ -1,0 +1,6 @@
+# microservice specific routes
+
+
+POST       /:tavcRef/:envelopeId/:id/close-envelope                 controllers.internal.InternalController.closeEnvelope(tavcRef:String, envelopeId:String, id:String)
+
+
