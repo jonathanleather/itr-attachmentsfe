@@ -16,16 +16,16 @@
 
 package controllers.helpers
 
-import common.Constants
 import connectors.{EnrolmentConnector, KeystoreConnector, S4LConnector}
 import models.fileUpload.{EnvelopeFile, Metadata}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar
+import org.scalatestplus.play.OneAppPerSuite
 import services.{FileUploadService}
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import uk.gov.hmrc.play.test.UnitSpec
 
-trait BaseSpec extends UnitSpec with WithFakeApplication with MockitoSugar with FakeRequestHelper with  BeforeAndAfterEach {
+trait BaseSpec extends UnitSpec with OneAppPerSuite with MockitoSugar with FakeRequestHelper with  BeforeAndAfterEach {
 
   val mockS4lConnector = mock[S4LConnector]
   val mockEnrolmentConnector = mock[EnrolmentConnector]
@@ -48,5 +48,9 @@ trait BaseSpec extends UnitSpec with WithFakeApplication with MockitoSugar with 
   val fileFive = EnvelopeFile("5","status","testFive.pdf","pdf","dateCreated",metaData,"href")
   val files = Seq(fileOne,fileTwo)
   val maxFiles = Seq(fileOne,fileTwo,fileThree,fileFour,fileFive)
+
+  val envelopeId = "1111111111111111111"
+  val fileId = "1"
+
 
 }

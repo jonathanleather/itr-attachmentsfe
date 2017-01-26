@@ -54,7 +54,8 @@ trait FileUploadController extends FrontendController with AuthorisedAndEnrolled
       val urlBack = backUrl.fold("")(_.toString)
       val urlContinue = continueUrl.fold("")(_.toString)
 
-      def processQueryString(cUrl: String, bUrl: String) = {
+      def processQueryString(cUrl:String, bUrl:String) = {
+
         if (cUrl.length > 0) {
           keyStoreConnector.saveFormData(KeystoreKeys.continueUrl, cUrl)
         }

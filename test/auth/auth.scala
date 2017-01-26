@@ -41,6 +41,8 @@ package object auth {
     val name = "Dave Agent"
   }
 
+
+
   object ggUser {
 
     val loggedInAt = Some(new DateTime(2015, 11, 22, 11, 33, 15, 234, DateTimeZone.UTC))
@@ -63,6 +65,8 @@ package object auth {
       governmentGatewayToken = Some(ggSession.governmentGatewayToken),
       nameFromSession = Some(ggSession.name)
     )
+
+
 
   }
 

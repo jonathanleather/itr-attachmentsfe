@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package connectors
+package utils
 
-import config.FrontendAppConfig
-import org.scalatest.mock.MockitoSugar
+import controllers.helpers.BaseSpec
 
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+class DateFormatterSpec extends BaseSpec with DateFormatter{
 
-class FileUploadConnectorSpec extends UnitSpec with WithFakeApplication with MockitoSugar {
+  val day = 1
+  val month = 1
+  val year = 1990
 
-  "FileUploadConnector" should {
-
-    "Use the service url from app config" in {
-      FileUploadConnector.serviceURL shouldBe FrontendAppConfig.fileUploadUrl
+  "Calling  DateFormatter toDateString" should {
+    "should return the correctly formatted date" in {
+      toDateString(day, month, year) shouldBe "01 January 1990"
     }
-
   }
-
 }
