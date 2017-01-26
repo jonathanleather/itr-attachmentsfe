@@ -158,7 +158,7 @@ trait FileUploadService {
         else 1
     }
   }
-git commit 
+
   private def addMetadataFile(envelopeID: String, tavcRef: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Boolean] = {
     generateFileID(envelopeID).flatMap {
       fileID =>
