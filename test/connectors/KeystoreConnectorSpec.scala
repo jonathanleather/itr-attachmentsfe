@@ -16,12 +16,12 @@
 
 package connectors
 
-import controllers.helpers.BaseSpec
+import common.BaseSpec
 import models.fileUpload.EnvelopeFile
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.cache.client.{SessionCache, CacheMap}
+import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
 import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import play.api.test.Helpers._

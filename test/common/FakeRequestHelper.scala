@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package controllers.helpers
+package common
 
 import java.util.UUID
 
+import akka.util.ByteString
 import auth._
 import play.api.mvc._
 import play.api.test.FakeRequest
@@ -25,7 +26,7 @@ import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
 
-trait FakeRequestHelper{
+trait FakeRequestHelper {
   lazy val sessionId = UUID.randomUUID.toString
   lazy val fakeRequest = FakeRequest()
   lazy val fakeRequestWithSession = fakeRequest.withSession(SessionKeys.sessionId -> s"session-$sessionId")
@@ -48,7 +49,7 @@ trait FakeRequestHelper{
     timedOutFakeRequest.withFormUrlEncodedBody(input: _*)
   }
 
-  def fakeRequestWithMultipartFormData (input: MultipartFormData[Array[Byte]]): FakeRequest[MultipartFormData[Array[Byte]]] = {
+  def fakeRequestWithMultipartFormData (input: MultipartFormData[ByteString]): FakeRequest[MultipartFormData[ByteString]] = {
     fakeRequest.withBody(input)
   }
 
@@ -93,7 +94,7 @@ trait FakeRequestHelper{
     test(result)
   }
 
-  def submitWithMultipartFormData(action: Action[MultipartFormData[Array[Byte]]], multipartFormData: MultipartFormData[Array[Byte]])
+  def submitWithMultipartFormData(action: Action[MultipartFormData[ByteString]], multipartFormData: MultipartFormData[ByteString])
                                  (test: Future[Result] => Any) {
     val result = action.apply(fakeRequestWithMultipartFormData(multipartFormData))
     test(result)

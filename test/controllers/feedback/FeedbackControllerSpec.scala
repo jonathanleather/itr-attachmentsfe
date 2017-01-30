@@ -17,7 +17,7 @@
 package controllers.feedback
 
 import auth.{MockAuthConnector, MockConfig}
-import controllers.helpers.ControllerSpec
+import common.ControllerSpec
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import play.api.http.Status

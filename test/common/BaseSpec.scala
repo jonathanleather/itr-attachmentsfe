@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.helpers
+package common
 
 import connectors.{EnrolmentConnector, KeystoreConnector, S4LConnector}
 import models.fileUpload.{EnvelopeFile, Metadata}
@@ -22,7 +22,7 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.OneAppPerSuite
-import services.{FileUploadService}
+import services.FileUploadService
 import uk.gov.hmrc.play.test.UnitSpec
 
 trait BaseSpec extends UnitSpec with OneAppPerSuite with MockitoSugar with FakeRequestHelper with  BeforeAndAfterEach {

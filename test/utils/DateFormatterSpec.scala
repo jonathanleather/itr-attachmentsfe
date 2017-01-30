@@ -16,7 +16,7 @@
 
 package utils
 
-import controllers.helpers.BaseSpec
+import common.BaseSpec
 
 class DateFormatterSpec extends BaseSpec with DateFormatter{
 

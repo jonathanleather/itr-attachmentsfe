@@ -16,13 +16,13 @@
 
 package views.fileUpload
 
+import common.BaseSpec
 import org.jsoup.Jsoup
 import play.api.i18n.Messages
-import play.api.test.Helpers._
-import views.helpers.ViewSpec
-import views.html.fileUpload.{NoJavascriptUploadForm, JavascriptUploadForm}
+import views.html.fileUpload.NoJavascriptUploadForm
+import play.api.i18n.Messages.Implicits._
 
-class NoJavascriptUploadFormSpec extends ViewSpec{
+class NoJavascriptUploadFormSpec extends BaseSpec {
 
   val envelopeID = "00000000-0000-0000-0000-000000000000"
 
@@ -30,8 +30,8 @@ class NoJavascriptUploadFormSpec extends ViewSpec{
 
     "contain the correct elements when loaded with no files" in {
 
-      lazy val page = NoJavascriptUploadForm(Seq(), envelopeID)(fakeRequest)
-      lazy val document = Jsoup.parse(contentAsString(page))
+      lazy val page = NoJavascriptUploadForm(Seq(), envelopeID)(fakeRequest, applicationMessages)
+      lazy val document = Jsoup.parse(page.body)
 
       //Dynamic button
       document.body.getElementsByAttributeValue("style", "display: none;").size() shouldBe 0
@@ -40,8 +40,8 @@ class NoJavascriptUploadFormSpec extends ViewSpec{
 
     "contain the correct elements when loaded with 1 or more files" in {
 
-      lazy val page = NoJavascriptUploadForm(files, envelopeID)(fakeRequest)
-      lazy val document = Jsoup.parse(contentAsString(page))
+      lazy val page = NoJavascriptUploadForm(files, envelopeID)(fakeRequest, applicationMessages)
+      lazy val document = Jsoup.parse(page.body)
 
       //File upload should be invisible
       document.body.getElementsByAttributeValue("style", "display: none;").size() shouldBe 0

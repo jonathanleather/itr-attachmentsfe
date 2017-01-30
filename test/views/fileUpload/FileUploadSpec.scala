@@ -16,14 +16,13 @@
 
 package views.fileUpload
 
-import controllers.routes
+import common.BaseSpec
 import org.jsoup.Jsoup
 import play.api.i18n.Messages
-import play.api.test.Helpers._
-import views.helpers.ViewSpec
 import views.html.fileUpload.FileUpload
+import play.api.i18n.Messages.Implicits._
 
-class FileUploadSpec extends ViewSpec {
+class FileUploadSpec extends BaseSpec {
 
   val envelopeID = "00000000-0000-0000-0000-000000000000"
   val backUrl = "http://test/back"
@@ -31,8 +30,8 @@ class FileUploadSpec extends ViewSpec {
   "The FileUpload page" should {
 
     "contain the correct elements when loaded with no files" in {
-      lazy val page = FileUpload(Seq(), envelopeID,backUrl)(fakeRequest)
-      lazy val document = Jsoup.parse(contentAsString(page))
+      lazy val page = FileUpload(Seq(), envelopeID,backUrl)(fakeRequest, applicationMessages)
+      lazy val document = Jsoup.parse(page.body)
 
       //title and heading
       document.title() shouldBe Messages("page.fileUpload.title")
@@ -74,8 +73,8 @@ class FileUploadSpec extends ViewSpec {
 
     "contain the correct elements when loaded with one or more files" in {
 
-      lazy val page = FileUpload(files, envelopeID,"http://test/back")(fakeRequest)
-      lazy val document = Jsoup.parse(contentAsString(page))
+      lazy val page = FileUpload(files, envelopeID,"http://test/back")(fakeRequest, applicationMessages)
+      lazy val document = Jsoup.parse(page.body)
 
       //title and heading
       document.title() shouldBe Messages("page.fileUpload.title")
@@ -118,8 +117,8 @@ class FileUploadSpec extends ViewSpec {
 
     "contain the correct elements when loaded with 5 files" in {
 
-      lazy val page = FileUpload(maxFiles, envelopeID, "http://test/back")(fakeRequest)
-      lazy val document = Jsoup.parse(contentAsString(page))
+      lazy val page = FileUpload(maxFiles, envelopeID, "http://test/back")(fakeRequest, applicationMessages)
+      lazy val document = Jsoup.parse(page.body)
 
       //title and heading
       document.title() shouldBe Messages("page.fileUpload.title")

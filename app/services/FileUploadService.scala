@@ -16,9 +16,10 @@
 
 package services
 
+import akka.util.ByteString
 import auth.TAVCUser
 import common.{Constants, KeystoreKeys}
-import connectors.{FileUploadConnector, S4LConnector, AttachmentsConnector}
+import connectors.{AttachmentsConnector, FileUploadConnector, S4LConnector}
 import models.fileUpload.{Envelope, EnvelopeFile, MetadataModel}
 import play.api.Logger
 import play.mvc.Http.Status._
@@ -93,7 +94,7 @@ trait FileUploadService {
     }
   }
 
-  def uploadFile(file: Array[Byte], fileName: String, envelopeID: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[HttpResponse] = {
+  def uploadFile(file: ByteString, fileName: String, envelopeID: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[HttpResponse] = {
     for {
       fileID <- generateFileID(envelopeID)
       result <- fileUploadConnector.addFileContent(envelopeID, fileID, fileName, file, PDF)

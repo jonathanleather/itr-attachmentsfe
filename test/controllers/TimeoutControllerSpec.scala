@@ -16,7 +16,7 @@
 
 package controllers
 
-import helpers.ControllerSpec
+import common.ControllerSpec
 import play.api.test.Helpers._
 
 class TimeoutControllerSpec extends ControllerSpec {

@@ -1,5 +1,5 @@
 @import models.fileUpload.EnvelopeFile
-@(files: Seq[EnvelopeFile], envelopeID: String)(implicit request: Request[_])
+@(files: Seq[EnvelopeFile], envelopeID: String)(implicit request: Request[_], messages: Messages)
 
 <div class="form-group">
     <input type="hidden" id="envelope-id" name="envelope-id" value="@envelopeID">

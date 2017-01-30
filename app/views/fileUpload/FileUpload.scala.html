@@ -3,7 +3,7 @@
 @import views.html.helpers.errorSummaryFileUpload
 @import models.fileUpload.EnvelopeFile
 
-@(files: Seq[EnvelopeFile], envelopeID: String, backUrl:String, fileErrors: Seq[FormError] = Seq())(implicit request: Request[_])
+@(files: Seq[EnvelopeFile], envelopeID: String, backUrl:String, fileErrors: Seq[FormError] = Seq())(implicit request: Request[_], messages: Messages)
 
 @sidebar = {
     <h2 class="heading-small" id="supporting-docs-heading"> @Messages("page.supportingDocuments.SupportingDocuments.heading")</h2>

@@ -16,13 +16,13 @@
 
 package connectors
 
-import auth.{ggUser, TAVCUser}
-import controllers.helpers.BaseSpec
+import auth.{TAVCUser, ggUser}
+import common.BaseSpec
 import models.fileUpload.EnvelopeFile
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.cache.client.{ShortLivedCache, SessionCache, CacheMap}
+import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache, ShortLivedCache}
 import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import play.api.test.Helpers._

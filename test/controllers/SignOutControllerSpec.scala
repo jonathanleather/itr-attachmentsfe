@@ -17,9 +17,9 @@
 package controllers
 
 import auth.{MockAuthConnector, MockConfig}
+import common.ControllerSpec
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.EnrolmentConnector
-import controllers.helpers.ControllerSpec
 import play.api.test.Helpers._
 
 
