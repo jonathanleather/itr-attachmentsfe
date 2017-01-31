@@ -16,14 +16,13 @@
 
 package views.fileUpload
 
-import controllers.routes
+import common.BaseSpec
 import org.jsoup.Jsoup
 import play.api.i18n.Messages
-import play.api.test.Helpers._
-import views.helpers.ViewSpec
 import views.html.fileUpload.FileDelete
+import play.api.i18n.Messages.Implicits._
 
-class FileDeleteSpec  extends ViewSpec {
+class FileDeleteSpec  extends BaseSpec {
 
   val fileName = "test.pdf"
   val fileID = "1"
@@ -32,8 +31,8 @@ class FileDeleteSpec  extends ViewSpec {
 
     "contain the correct elements when loaded with a fileID and file name" in {
 
-      lazy val page = FileDelete(fileID, fileName)(fakeRequest)
-      lazy val document = Jsoup.parse(contentAsString(page))
+      lazy val page = FileDelete(fileID, fileName)(fakeRequest, applicationMessages)
+      lazy val document = Jsoup.parse(page.body)
 
       //title and heading
       document.title() shouldBe Messages("page.fileDelete.title")

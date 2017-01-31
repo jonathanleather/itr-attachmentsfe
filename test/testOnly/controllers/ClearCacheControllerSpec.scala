@@ -18,10 +18,10 @@ package controllers
 
 import java.net.URLEncoder
 
-import auth.{MockConfig, MockAuthConnector}
-import config.{FrontendAuthConnector, FrontendAppConfig}
-import connectors.{S4LConnector, EnrolmentConnector}
-import helpers.ControllerSpec
+import auth.{MockAuthConnector, MockConfig}
+import common.ControllerSpec
+import config.{FrontendAppConfig, FrontendAuthConnector}
+import connectors.{EnrolmentConnector, S4LConnector}
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import play.api.test.Helpers._

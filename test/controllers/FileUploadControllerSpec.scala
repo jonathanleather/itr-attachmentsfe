@@ -18,11 +18,11 @@ package controllers
 
 import java.net.URLEncoder
 
+import akka.util.ByteString
 import auth.{MockAuthConnector, MockConfig}
-import common.KeystoreKeys
+import common.{ControllerSpec, KeystoreKeys}
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.{EnrolmentConnector, KeystoreConnector}
-import helpers.ControllerSpec
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import play.api.mvc.MultipartFormData
@@ -30,13 +30,14 @@ import play.api.mvc.MultipartFormData.FilePart
 import play.api.test.Helpers._
 import services.FileUploadService
 import uk.gov.hmrc.play.http.HttpResponse
+
 import scala.concurrent.Future
 
 class FileUploadControllerSpec extends ControllerSpec {
 
   val envelopeID = "00000000-0000-0000-0000-000000000000"
   val fileName = "test.pdf"
-  val tempFile = Array("1".toByte)
+  val tempFile = ByteString("1")
   val testUrl = "http://"
 
   lazy val multipartFormData = {
@@ -44,8 +45,8 @@ class FileUploadControllerSpec extends ControllerSpec {
     MultipartFormData(
       dataParts = Map("envelope-id" -> Seq(envelopeID)),
       files = Seq(part),
-      badParts = Seq(),
-      missingFileParts = Seq())
+      badParts = Seq()
+    )
   }
 
   lazy val multipartFormDataNoFile = {
@@ -53,8 +54,8 @@ class FileUploadControllerSpec extends ControllerSpec {
     MultipartFormData(
       dataParts = Map("envelope-id" -> Seq(envelopeID)),
       files = Seq(part),
-      badParts = Seq(),
-      missingFileParts = Seq())
+      badParts = Seq()
+    )
   }
 
   object TestController extends FileUploadController {

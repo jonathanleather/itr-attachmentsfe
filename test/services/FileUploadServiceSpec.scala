@@ -16,6 +16,7 @@
 
 package services
 
+import akka.util.ByteString
 import auth.{TAVCUser, ggUser}
 import common.{Constants, KeystoreKeys}
 import connectors.{AttachmentsConnector, FileUploadConnector, S4LConnector}
@@ -95,6 +96,7 @@ class FileUploadServiceSpec extends UnitSpec with MockitoSugar with WithFakeAppl
     override def cookie(name: String) = ???
     override def cookies = ???
     override def json = ???
+    override def bodyAsBytes = ???
   }
 
   before{
@@ -253,7 +255,7 @@ class FileUploadServiceSpec extends UnitSpec with MockitoSugar with WithFakeAppl
 
   "uploadFile" when {
 
-    val testFile = Array("1".toByte)
+    val testFile = ByteString("1")
 
     "The envelope has no files and the file is uploaded successfully" should {
 

@@ -32,20 +32,19 @@
 
 package connectors
 
-import auth.{ggUser, MockConfig, TAVCUser}
+import auth.{MockConfig, TAVCUser, ggUser}
+import common.{BaseSpec, FakeRequestHelper}
 import config.WSHttp
-import controllers.helpers.{BaseSpec, FakeRequestHelper}
 import org.mockito.Matchers
 import org.mockito.Mockito._
-import org.scalatestplus.play.{OneAppPerSuite}
 import uk.gov.hmrc.play.http._
 import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.http.ws.WSHttp
-import uk.gov.hmrc.play.http.ws.WSHttp
+
 import scala.concurrent.Future
 import play.api.test.Helpers._
 
-class AttachmentsConnectorSpec extends BaseSpec with OneAppPerSuite {
+class AttachmentsConnectorSpec extends BaseSpec {
 
   object TestAttachmentsConnector extends AttachmentsConnector with FakeRequestHelper {
     override val serviceUrl = MockConfig.attachmentsUrl

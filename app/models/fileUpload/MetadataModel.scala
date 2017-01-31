@@ -16,12 +16,13 @@
 
 package models.fileUpload
 
+import akka.util.ByteString
 import org.joda.time.format.DateTimeFormatterBuilder
 import uk.gov.hmrc.time.DateTimeUtils
 
 case class MetadataModel(envelopeID: String, tavcRef: String) {
 
-  def getControlFile: Array[Byte] = controlFormat.getBytes
+  def getControlFile: ByteString = ByteString.apply(controlFormat.getBytes)
 
   private val caseID = tavcRef.replaceFirst("[A-Z]{2}TAVC", "TAVC-")
 

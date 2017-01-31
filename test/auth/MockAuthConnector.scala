@@ -42,7 +42,8 @@ object MockAuthConnector extends AuthConnector {
       ConfidenceLevel.L50,
       None,
       None,
-      None
+      None,
+      "0000000000"
     ))
 
   private def weakStrengthUser: Option[Authority] =
@@ -54,7 +55,8 @@ object MockAuthConnector extends AuthConnector {
       ConfidenceLevel.L50,
       None,
       None,
-      None
+      None,
+      "0000000000"
     ))
 
   private def noStrengthUser: Option[Authority] =
@@ -66,6 +68,7 @@ object MockAuthConnector extends AuthConnector {
       ConfidenceLevel.L50,
       None,
       None,
-      None
+      None,
+      "0000000000"
     ))
 }

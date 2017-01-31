@@ -16,13 +16,13 @@
 
 package views.fileUpload
 
+import common.BaseSpec
 import org.jsoup.Jsoup
 import play.api.i18n.Messages
-import play.api.test.Helpers._
-import views.helpers.ViewSpec
 import views.html.fileUpload.JavascriptUploadForm
+import play.api.i18n.Messages.Implicits._
 
-class JavascriptUploadFormSpec extends ViewSpec{
+class JavascriptUploadFormSpec extends BaseSpec {
 
   val envelopeID = "00000000-0000-0000-0000-000000000000"
 
@@ -30,8 +30,8 @@ class JavascriptUploadFormSpec extends ViewSpec{
 
     "contain the correct elements when loaded with no files" in {
 
-      lazy val page = JavascriptUploadForm(Seq(), envelopeID)(fakeRequest)
-      lazy val document = Jsoup.parse(contentAsString(page))
+      lazy val page = JavascriptUploadForm(Seq(), envelopeID)(fakeRequest, applicationMessages)
+      lazy val document = Jsoup.parse(page.body)
 
       document.body.getElementById("envelope-id").`val`() shouldBe envelopeID
       //Dynamic button
@@ -42,8 +42,8 @@ class JavascriptUploadFormSpec extends ViewSpec{
 
     "contain the correct elements when loaded with 1 or more files" in {
 
-      lazy val page = JavascriptUploadForm(files, envelopeID)(fakeRequest)
-      lazy val document = Jsoup.parse(contentAsString(page))
+      lazy val page = JavascriptUploadForm(files, envelopeID)(fakeRequest, applicationMessages)
+      lazy val document = Jsoup.parse(page.body)
 
       //File upload should be invisible
       document.body.getElementsByAttributeValue("style", "display: none;").size() shouldBe 1

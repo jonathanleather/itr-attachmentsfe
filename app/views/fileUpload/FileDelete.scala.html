@@ -1,7 +1,7 @@
 @import uk.gov.hmrc.play.views.html.helpers.{form}
 @import views.html.helpers.backButtonWithProgress
 
-@(fileID: String, fileName: String)(implicit request: Request[_])
+@(fileID: String, fileName: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(Messages("page.fileDelete.title")) {
 @backButtonWithProgress(controllers.routes.FileUploadController.show().url, Messages("common.section.progress.company.details.five"))

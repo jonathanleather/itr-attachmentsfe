@@ -18,27 +18,26 @@ package utils
 
 import java.io.ByteArrayOutputStream
 
-import play.api.libs.iteratee.Iteratee
+import akka.stream.scaladsl.Sink
+import akka.util.ByteString
+import play.api.libs.streams.Accumulator
 import play.api.mvc.MultipartFormData.FilePart
-import play.api.mvc.BodyParsers.parse.Multipart._
-import scala.concurrent.ExecutionContext.Implicits.global
+import play.core.parsers.Multipart.{FileInfo, FilePartHandler}
 
 object MultipartFormDataParser {
 
-  def multipartFormDataParser: PartHandler[FilePart[Array[Byte]]] = {
-    handleFilePart {
-      case FileInfo(partName, filename, contentType) =>
-        val baos = new java.io.ByteArrayOutputStream()
-        Iteratee.fold[Array[Byte], ByteArrayOutputStream](baos) {
-          (os, data) =>
-            os.write(data)
-            os
-        }.map {
-          os =>
-            os.close()
-            baos.toByteArray
-        }
-    }
+  def handleFilePartAsFile: FilePartHandler[ByteString] = {
+    case FileInfo(partName, filename, contentType) =>
+      val baos = new java.io.ByteArrayOutputStream()
+      val sink = Sink.fold[ByteArrayOutputStream, ByteString](baos) {
+        (os, data) =>
+          os.write(data.toArray)
+          os
+      }
+      val accumulator = Accumulator(sink)
+      accumulator.map { case outputStream =>
+        FilePart(partName, filename, contentType, ByteString(outputStream.toByteArray))
+      }(play.api.libs.concurrent.Execution.defaultContext)
   }
 
 }

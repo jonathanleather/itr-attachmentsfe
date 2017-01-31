@@ -17,11 +17,11 @@
 package controllers
 
 import auth.MockAuthConnector
+import common.ControllerSpec
 import controllers.internal.InternalController
 import play.api.libs.json.Json
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.EnrolmentConnector
-import helpers.ControllerSpec
 import services.FileUploadService
 import uk.gov.hmrc.http.cache.client.CacheMap
 class InternalControllerSpec extends ControllerSpec {

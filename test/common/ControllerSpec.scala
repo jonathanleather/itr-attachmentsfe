@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package controllers.helpers
+package common
 
-import auth.{TAVCUser, Enrolment, Identifier, ggUser}
+import auth.{Enrolment, Identifier, TAVCUser, ggUser}
 import org.mockito.Matchers
 import org.mockito.Mockito._
-import org.scalatestplus.play.OneAppPerSuite
 import uk.gov.hmrc.play.http.HeaderCarrier
-import scala.concurrent.Future
-import play.api.Play.current
 
-trait ControllerSpec extends BaseSpec with OneAppPerSuite{
+import scala.concurrent.Future
+
+trait ControllerSpec extends BaseSpec {
 
   val tavcReferenceId = "XATAVC000123456"
 

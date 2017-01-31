@@ -16,7 +16,7 @@
 
 package controllers
 
-import utils.MultipartFormDataParser._
+import akka.util.ByteString
 import config.FrontendGlobal.internalServerErrorTemplate
 import auth.AuthorisedAndEnrolledForTAVC
 import common.KeystoreKeys
@@ -25,13 +25,13 @@ import connectors.{EnrolmentConnector, KeystoreConnector}
 import play.api.data.FormError
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MultipartFormData, Result}
-import play.api.mvc.BodyParsers.parse._
 import services.FileUploadService
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import utils.Transformers
+import utils.{MultipartFormDataParser, Transformers}
 import views.html.fileUpload.FileUpload
-import play.api.libs.json._
 import uk.gov.hmrc.play.http.HeaderCarrier
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 import scala.concurrent.Future
 
@@ -104,7 +104,8 @@ trait FileUploadController extends FrontendController with AuthorisedAndEnrolled
     } yield route
   }
 
-  def upload: Action[MultipartFormData[Array[Byte]]] = Action.async(multipartFormData(multipartFormDataParser)) {
+  def upload: Action[MultipartFormData[ByteString]] = Action.async(parse.multipartFormData[ByteString]
+    (MultipartFormDataParser.handleFilePartAsFile)) {
 
     implicit request =>
       def processErrors(envelopeID: String, errors: Seq[Boolean])(implicit hc: HeaderCarrier): Future[Result] = {
