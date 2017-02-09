@@ -77,6 +77,10 @@
         }
 
         @if(files.size < 5){
+            <div class="form-group">
+                <input type="hidden" id="envelope-id" name="envelope-id" value="@envelopeID">
+            </div>
+
             <div id="javascript-disabled" class="form-group">
                 @form(action = routes.FileUploadController.upload(), 'enctype -> "multipart/form-data") {
                     @NoJavascriptUploadForm(files,envelopeID)
