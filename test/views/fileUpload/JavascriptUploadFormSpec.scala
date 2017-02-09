@@ -32,8 +32,6 @@ class JavascriptUploadFormSpec extends BaseSpec {
 
       lazy val page = JavascriptUploadForm(Seq(), envelopeID)(fakeRequest, applicationMessages)
       lazy val document = Jsoup.parse(page.body)
-
-      document.body.getElementById("envelope-id").`val`() shouldBe envelopeID
       //Dynamic button
 
       document.body.getElementsByAttributeValue("style", "display: none;").size() shouldBe 1
