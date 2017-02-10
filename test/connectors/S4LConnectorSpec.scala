@@ -36,8 +36,9 @@ class S4LConnectorSpec extends BaseSpec {
   }
 
   val testModel = fileOne
+  val internalId = "Int-312e5e92-762e-423b-ac3d-8686af27fdb5"
   implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("1234")))
-  implicit val user = TAVCUser(ggUser.allowedAuthContext)
+  implicit val user = TAVCUser(ggUser.allowedAuthContext, internalId)
 
   "fetchAndGetFormData" should {
 

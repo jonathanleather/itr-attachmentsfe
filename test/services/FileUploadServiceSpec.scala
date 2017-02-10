@@ -36,6 +36,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class FileUploadServiceSpec extends UnitSpec with MockitoSugar with WithFakeApplication with BeforeAndAfter {
 
+  val internalId = "Int-312e5e92-762e-423b-ac3d-8686af27fdb5"
   val mockFileUploadConnector = mock[FileUploadConnector]
   val mockS4LConnector = mock[S4LConnector]
   val mockAttachmentsConnector = mock[AttachmentsConnector]
@@ -45,7 +46,7 @@ class FileUploadServiceSpec extends UnitSpec with MockitoSugar with WithFakeAppl
   val envelopeStatus = "OPEN"
   val fileName = "test.pdf"
   implicit val hc = HeaderCarrier()
-  implicit val user = TAVCUser(ggUser.allowedAuthContext)
+  implicit val user = TAVCUser(ggUser.allowedAuthContext, internalId)
   val tavcReferenceId = "XATAVC000123456"
   val oid = "00000001-0000-0000-0000-000000000000"
 

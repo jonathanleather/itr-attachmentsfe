@@ -16,6 +16,7 @@
 
 package common
 
+import auth.MockAuthConnector
 import connectors.{EnrolmentConnector, KeystoreConnector, S4LConnector}
 import models.fileUpload.{EnvelopeFile, Metadata}
 import org.mockito.Mockito._

@@ -46,13 +46,15 @@ import play.api.test.Helpers._
 
 class AttachmentsConnectorSpec extends BaseSpec {
 
+  val internalId = "Int-312e5e92-762e-423b-ac3d-8686af27fdb5"
+
   object TestAttachmentsConnector extends AttachmentsConnector with FakeRequestHelper {
     override val serviceUrl = MockConfig.attachmentsUrl
     override val http = mock[WSHttp]
   }
 
   implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("1234")))
-  implicit val user: TAVCUser = TAVCUser(ggUser.allowedAuthContext)
+  implicit val user: TAVCUser = TAVCUser(ggUser.allowedAuthContext, internalId)
 
   "AttachmentsConnector" should {
     "use the correct http client" in {
