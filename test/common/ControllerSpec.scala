@@ -16,6 +16,7 @@
 
 package common
 
+import auth.authModels.UserIDs
 import auth.{Enrolment, Identifier, TAVCUser, ggUser}
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -26,17 +27,21 @@ import scala.concurrent.Future
 trait ControllerSpec extends BaseSpec {
 
   val tavcReferenceId = "XATAVC000123456"
+  val internalId = "Int-312e5e92-762e-423b-ac3d-8686af27fdb5"
 
   def mockEnrolledRequest(): Unit = {
     when(mockEnrolmentConnector.getTAVCEnrolment(Matchers.any())(Matchers.any()))
       .thenReturn(Future.successful(Option(Enrolment("HMRC-TAVC-ORG", Seq(Identifier("TavcReference", "1234")), "Activated"))))
     when(mockEnrolmentConnector.getTavcReferenceNumber(Matchers.any())(Matchers.any()))
       .thenReturn(Future.successful(tavcReferenceId))
+    //val userIds: UserIDs = UserIDs("Int-312e5e92-762e-423b-ac3d-8686af27fdb5", "Ext-312e5e92-762e-423b-ac3d-8686af27fdb5")
+//    when(mockAuthConnector.getIds[UserIDs](Matchers.any())).thenReturn(userIds)
+    //when(auth.MockAuthConnector.getIds[UserIDs](Matchers.any())).thenReturn(userIds)
   }
 
   def mockNotEnrolledRequest(): Unit = when(mockEnrolmentConnector.getTAVCEnrolment(Matchers.any())(Matchers.any()))
     .thenReturn(Future.successful(None))
 
   implicit val hc = HeaderCarrier()
-  implicit val user = TAVCUser(ggUser.allowedAuthContext)
+  implicit val user = TAVCUser(ggUser.allowedAuthContext, internalId)
 }

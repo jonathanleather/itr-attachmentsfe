@@ -215,7 +215,6 @@ class FileUploadControllerSpec extends ControllerSpec {
       showWithSessionAndAuth(TestController.show(None, Some("back")))(
         result => {
           status(result) shouldBe BAD_REQUEST
-          contentAsString(result) shouldBe "Required Continue Url not passsed"
         }
       )
     }
@@ -232,7 +231,6 @@ class FileUploadControllerSpec extends ControllerSpec {
       showWithSessionAndAuth(TestController.show(Some("continue"),None))(
         result => {
           status(result) shouldBe BAD_REQUEST
-          contentAsString(result) shouldBe "Required back Url not passsed"
         }
       )
     }

@@ -18,6 +18,7 @@ package controllers
 
 import java.net.URLEncoder
 
+import auth.authModels.UserIDs
 import auth.{MockAuthConnector, MockConfig}
 import common.ControllerSpec
 import config.{FrontendAppConfig, FrontendAuthConnector}
@@ -26,17 +27,17 @@ import org.mockito.Matchers
 import org.mockito.Mockito._
 import play.api.test.Helpers._
 import testOnly.controllers.ClearCacheController
-import uk.gov.hmrc.play.http.HttpResponse
+import uk.gov.hmrc.play.http.{HttpResponse, UserId}
 
 class ClearCacheControllerSpec extends ControllerSpec{
 
   object TestClearCacheController extends ClearCacheController{
     override lazy val enrolmentConnector = mockEnrolmentConnector
     override lazy val applicationConfig= MockConfig
-    override protected def authConnector = MockAuthConnector
+    override  def authConnector = MockAuthConnector
     override lazy val s4LConnector = mockS4lConnector
-  }
 
+  }
 
   "ClearCacheControllerSpec" should {
     "use the save for later connector" in {
@@ -56,13 +57,10 @@ class ClearCacheControllerSpec extends ControllerSpec{
     }
   }
 
-
-
-
-
   "Issuing a request to the ClearCacheController clearCache method when authenticated and enrolled" should {
     "return a 200 Ok if cache is successfully cleared" in {
       mockEnrolledRequest()
+      val userIds: UserIDs = UserIDs("Int-312e5e92-762e-423b-ac3d-8686af27fdb5", "Ext-312e5e92-762e-423b-ac3d-8686af27fdb5")
       when(TestClearCacheController.s4LConnector.clearCache()(Matchers.any(), Matchers.any())).thenReturn(HttpResponse(NO_CONTENT))
       showWithSessionAndAuth(TestClearCacheController.clearCache())(
         result => {

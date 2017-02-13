@@ -17,11 +17,12 @@
 package controllers
 
 import akka.util.ByteString
-import config.FrontendGlobal.internalServerErrorTemplate
+import config.FrontendGlobal.{internalServerErrorTemplate, badRequestTemplate}
 import auth.AuthorisedAndEnrolledForTAVC
 import common.KeystoreKeys
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.{EnrolmentConnector, KeystoreConnector}
+import play.api.Logger
 import play.api.data.FormError
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MultipartFormData, Result}
@@ -54,7 +55,7 @@ trait FileUploadController extends FrontendController with AuthorisedAndEnrolled
       val urlBack = backUrl.fold("")(_.toString)
       val urlContinue = continueUrl.fold("")(_.toString)
 
-      def processQueryString(cUrl:String, bUrl:String) = {
+      def processQueryString(cUrl: String, bUrl: String) = {
 
         if (cUrl.length > 0) {
           keyStoreConnector.saveFormData(KeystoreKeys.continueUrl, cUrl)
@@ -73,8 +74,14 @@ trait FileUploadController extends FrontendController with AuthorisedAndEnrolled
         savedUrl <- keyStoreConnector.fetchAndGetFormData[String](KeystoreKeys.continueUrl)
         savedBackUrl <- keyStoreConnector.fetchAndGetFormData[String](KeystoreKeys.backUrl)
       } yield (envelopeID, files, savedUrl, savedBackUrl) match {
-        case (_, _, None, _) if continueUrl.fold("")(_.toString).length == 0 => BadRequest("Required Continue Url not passsed")
-        case (_, _, _, None) if backUrl.fold("")(_.toString).length == 0 => BadRequest("Required back Url not passsed")
+        case (_, _, None, _) if continueUrl.fold("")(_.toString).length == 0 => {
+          Logger.warn("[FileUploadController][show] Required Continue Url not passed")
+          BadRequest(badRequestTemplate)
+        }
+        case (_, _, _, None) if backUrl.fold("")(_.toString).length == 0 => {
+          Logger.warn("[FileUploadController][show] Required back Url not passed")
+          BadRequest(badRequestTemplate)
+        }
         case (_, _, _, _) if envelopeID.nonEmpty => {
           Ok(FileUpload(files, envelopeID, if (urlBack.length > 0) urlBack else savedBackUrl.getOrElse("")))
         }
@@ -137,12 +144,12 @@ trait FileUploadController extends FrontendController with AuthorisedAndEnrolled
       }
   }
 
-//  def closeEnvelope(tavcRef: String, envelopeId: String, id: String): Action[AnyContent] = Action.async { implicit request =>
-//    fileUploadService.closeEnvelope(tavcRef, envelopeId, id).map {
-//      responseReceived =>
-//        Status(responseReceived.status)(responseReceived.body)
-//    }
-//  }
+  //  def closeEnvelope(tavcRef: String, envelopeId: String, id: String): Action[AnyContent] = Action.async { implicit request =>
+  //    fileUploadService.closeEnvelope(tavcRef, envelopeId, id).map {
+  //      responseReceived =>
+  //        Status(responseReceived.status)(responseReceived.body)
+  //    }
+  //  }
 
   private def generateFormErrors(errors: Seq[Boolean]): Seq[FormError] = {
     val messages = Seq(

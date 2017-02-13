@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package auth
+package auth.authModels
 
-import org.joda.time.DateTime
-import uk.gov.hmrc.play.frontend.auth.AuthContext
+import play.api.libs.json.Json
 
-case class TAVCUser(authContext: AuthContext, internalId: String) {
-  def previouslyLoggedInAt: Option[DateTime] = authContext.user.previouslyLoggedInAt
-  def userInternalId: String = internalId
+case class UserIDs(internalId: String, externalId: String)
+
+object UserIDs {
+  implicit val formats = Json.format[UserIDs]
+  implicit val reads = Json.reads[UserIDs]
 }
+
