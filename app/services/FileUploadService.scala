@@ -71,24 +71,38 @@ trait FileUploadService {
       files => files.size < Constants.numberOfFilesLimit
     }
 
-  def getEnvelopeID(createNewID: Boolean = true)(implicit hc: HeaderCarrier, ex: ExecutionContext, user: TAVCUser): Future[String] =
+  def getEnvelopeID(createNewID: Boolean = true)(implicit hc: HeaderCarrier, ex: ExecutionContext, user: TAVCUser): Future[String] = {
     s4lConnector.fetchAndGetFormData[String](KeystoreKeys.envelopeID).flatMap {
-      case Some(envelopeID) if envelopeID.nonEmpty => Future.successful(envelopeID)
-      case _ if createNewID =>
-        attachmentsConnector.createEnvelope().map {
-          result =>
-            val envelopeID = result.json.\("envelopeID").as[String]
-            s4lConnector.saveFormData(KeystoreKeys.envelopeID, envelopeID)
-            envelopeID
+      case Some(envelopeID) if envelopeID.nonEmpty => {
+        // make sure this id is not orphaned
+        checkEnvelopeStatus(envelopeID).flatMap {
+          case Some(envelope) => Future(envelope.id)
+          case _ if createNewID => createEnvelopeId
+          case _ => Future("")
         }
+      }
+      case _ if createNewID => createEnvelopeId
       case _ => Future.successful("")
     }
+  }
+
+  private def createEnvelopeId()(implicit hc: HeaderCarrier, ex: ExecutionContext, user: TAVCUser): Future[String]  = {
+
+    attachmentsConnector.createEnvelope().map {
+      result =>
+        val envelopeID = result.json.\("envelopeID").as[String]
+        s4lConnector.saveFormData(KeystoreKeys.envelopeID, envelopeID)
+        envelopeID
+    }
+  }
 
   def checkEnvelopeStatus(envelopeID: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Option[Envelope]] = {
     attachmentsConnector.getEnvelopeStatus(envelopeID).map {
       result => result.status match {
         case OK => result.json.asOpt[Envelope]
-        case _ => Logger.warn(s"[FileUploadConnector][checkEnvelopeStatus] Error ${result.status} received.")
+        case _ => {
+          Logger.warn(s"[FileUploadConnector][checkEnvelopeStatus] Error ${result.status} received.")
+        }
           None
       }
     }
