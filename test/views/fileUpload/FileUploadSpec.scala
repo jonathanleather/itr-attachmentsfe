@@ -109,7 +109,7 @@ class FileUploadSpec extends BaseSpec {
       filesTable.select("tr").get(1).getElementById("file-1").text() shouldBe "testTwo.pdf"
       filesTable.select("tr").get(1).getElementById("remove-1").text() shouldBe Messages("page.fileUpload.remove")
 
-      document.body.getElementById("continue-link").text() shouldBe Messages("page.fileUpload.continue")
+      document.body.getElementById("continue-link").text() shouldBe Messages("page.fileUpload.snc")
 
       <!--TODO: add to test when backlink to bavkUrl passed to service has been added -->
       <!--document.body.getElementById("progress-section").text shouldBe Messages("common.section.progress.company.details.five")-->
@@ -158,7 +158,7 @@ class FileUploadSpec extends BaseSpec {
       filesTable.select("tr").get(4).getElementById("remove-4").text() shouldBe Messages("page.fileUpload.remove")
 
       document.body.getElementById("file-limit-reached").text() shouldBe Messages("page.fileUpload.fileLimitReached")
-      document.body.getElementById("continue-link").text() shouldBe Messages("page.fileUpload.continue")
+      document.body.getElementById("continue-link").text() shouldBe Messages("page.fileUpload.snc")
 
       <!--TODO: add to test when backlink to bavkUrl passed to service has been added -->
       <!--document.body.getElementById("progress-section").text shouldBe Messages("common.section.progress.company.details.five") -->
