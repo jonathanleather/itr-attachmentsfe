@@ -35,6 +35,7 @@ private object AppDependencies {
   private val pegDownVersion = "1.6.0"
   private val jSoupVersion = "1.8.3"
   private val mockitoAll = "1.9.5"
+  private val playGraphiteVersion = "3.2.0"
 
   val compile = Seq(
     ws,
@@ -47,6 +48,7 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "play-health" % playHealthVersion,
     "uk.gov.hmrc" %% "play-ui" % playUiVersion,
     "uk.gov.hmrc" %% "http-caching-client" % cachingClientVersion,
+    "uk.gov.hmrc" %% "play-graphite" % playGraphiteVersion,
     "uk.gov.hmrc" %% "play-conditional-form-mapping" % playConditionalMappingVersion
   )
 
