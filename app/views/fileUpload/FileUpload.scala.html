@@ -67,7 +67,7 @@
             <tbody>
             @for((file, index) <- files.zipWithIndex) {
             <tr>
-                <td id="file-@{index}">@file.name</td>
+                <td id="file-@{index}">@file.length</td>
                 <td id="remove-@{index}"><a href="@routes.FileDeleteController.show(file.id)">@Messages("page.fileUpload.remove")</a></td>
             </tr>
             }

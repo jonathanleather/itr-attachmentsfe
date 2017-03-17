@@ -18,7 +18,7 @@ package services
 
 import akka.util.ByteString
 import auth.TAVCUser
-import common.{Constants, KeystoreKeys}
+import common.{Constants, FileHelper, KeystoreKeys}
 import connectors.{AttachmentsConnector, FileUploadConnector, S4LConnector}
 import models.fileUpload.{Envelope, EnvelopeFile, MetadataModel}
 import play.api.Logger
@@ -45,24 +45,43 @@ trait FileUploadService {
   def validateFile(envelopeID: String, fileName: String, fileSize: Int)
                   (implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Seq[Boolean]] = {
 
-    val lessThanFiveMegabytes: Int => Boolean = length => length <= Constants.fileSizeLimit
-    val isPDF: String => Boolean = fileName => fileName.matches("""(.*\.[pP][dD][fF])""")
+    val fileSizeWithinLimit: Int => Boolean = length => length <= Constants.fileSizeLimit
 
-    def fileNameUnique: Future[Boolean] = {
+//    def fileNameUnique: Future[Boolean] = {
+//      def compareFilenames(files: Seq[EnvelopeFile], index: Int = 0): Boolean = {
+//        if (files(index).name.equalsIgnoreCase(fileName)) false
+//        else if (index < files.length - 1) compareFilenames(files, index + 1)
+//        else true
+//      }
+//      getEnvelopeFiles(envelopeID).map {
+//        case files if files.nonEmpty => compareFilenames(files)
+//        case _ => true
+//      }
+//    }
+
+    getEnvelopeFiles(envelopeID).map {
+      case files if files.nonEmpty => fileNameUnique(files).map{
+
+      }
+      case _ => true
+    }
+
+    def fileNameUnique(files:Seq[EnvelopeFile]):Boolean = {
       def compareFilenames(files: Seq[EnvelopeFile], index: Int = 0): Boolean = {
         if (files(index).name.equalsIgnoreCase(fileName)) false
         else if (index < files.length - 1) compareFilenames(files, index + 1)
         else true
       }
-      getEnvelopeFiles(envelopeID).map {
-        case files if files.nonEmpty => compareFilenames(files)
-        case _ => true
-      }
+//      getEnvelopeFiles(envelopeID).map {
+//        case files if files.nonEmpty => compareFilenames(files)
+//        case _ => true
+//      }
+      compareFilenames(files)
     }
 
-    fileNameUnique.map {
-      nameUnique => Seq(nameUnique, lessThanFiveMegabytes(fileSize), isPDF(fileName))
-    }
+//    fileNameUnique.map {
+//      nameUnique => Seq(nameUnique, fileSizeWithinLimit(fileSize), FileHelper.isAllowableFileType(fileName))
+//    }
 
   }
 
@@ -111,7 +130,7 @@ trait FileUploadService {
   def uploadFile(file: ByteString, fileName: String, envelopeID: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[HttpResponse] = {
     for {
       fileID <- generateFileID(envelopeID)
-      result <- fileUploadConnector.addFileContent(envelopeID, fileID, fileName, file, PDF)
+      result <- fileUploadConnector.addFileContent(envelopeID, fileID, fileName, file, FileHelper.getMimeType(fileName))
     } yield result.status match {
       case OK => HttpResponse(result.status)
       case _ =>

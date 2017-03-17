@@ -24,7 +24,7 @@ object Metadata {
   implicit val formats = Json.format[Metadata]
 }
 
-case class EnvelopeFile(id: String, status: String, name: String, contentType: String, created: String, metadata: Metadata, href: String)
+case class EnvelopeFile(id: String, status: String, name: String, contentType: String, length:Int, created: String, metadata: Metadata, href: String)
 
 object EnvelopeFile {
   implicit val formats = Json.format[EnvelopeFile]

@@ -105,7 +105,7 @@ trait FileUploadController extends FrontendController with AuthorisedAndEnrolled
 
     for {
       continueUrl <- keyStoreConnector.fetchAndGetFormData[String](KeystoreKeys.continueUrl)
-      envelopeId <- FileUploadService.getEnvelopeID(false)
+      envelopeId <- FileUploadService.getEnvelopeID(createNewID = false)
       route <- routeRequest(continueUrl, envelopeId)
 
     } yield route
@@ -144,12 +144,6 @@ trait FileUploadController extends FrontendController with AuthorisedAndEnrolled
       }
   }
 
-  //  def closeEnvelope(tavcRef: String, envelopeId: String, id: String): Action[AnyContent] = Action.async { implicit request =>
-  //    fileUploadService.closeEnvelope(tavcRef, envelopeId, id).map {
-  //      responseReceived =>
-  //        Status(responseReceived.status)(responseReceived.body)
-  //    }
-  //  }
 
   private def generateFormErrors(errors: Seq[Boolean]): Seq[FormError] = {
     val messages = Seq(

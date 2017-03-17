@@ -46,9 +46,7 @@ case class MetadataModel(envelopeID: String, tavcRef: String) {
   private val controlFormat = s"""<?xml version="1.0" encoding="UTF-8" standalone="no"?>
     |<documents xmlns="http://govtalk.gov.uk/hmrc/gis/content/1">
     |  <document>
-    |    <header>
-    |      <format>pdf</format>
-    |      <mime_type>application/pdf</mime_type>
+    |    <header>|
     |      <source>tavc</source>
     |      <target>CFS</target>
     |      <reconciliation_id>$envelopeID</reconciliation_id>
