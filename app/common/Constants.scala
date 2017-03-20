@@ -23,7 +23,7 @@ trait Constants {
   val StandardRadioButtonNoValue = "No"
   val enrolmentOrgKey = "HMRC-TAVC-ORG"
   val enrolmentTavcRefKey = "TAVCRef"
-  val fileSizeLimit =10485760//10MB 15485760//5242880//10485760
+  val fileSizeLimit =10481664
   val numberOfFilesLimit = 57
   val envelopeLimit = 26214400 //25MB
 }

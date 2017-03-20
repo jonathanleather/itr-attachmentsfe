@@ -83,6 +83,9 @@ trait FileUploadController extends FrontendController with AuthorisedAndEnrolled
           BadRequest(badRequestTemplate)
         }
         case (_, _, _, _) if envelopeID.nonEmpty => {
+
+          print(s"gaz filecount  ${files.length} ========================================================")
+          print(s"envelope id  in show $envelopeID ========================================================")
           Ok(FileUpload(files, envelopeID, if (urlBack.length > 0) urlBack else savedBackUrl.getOrElse("")))
         }
         case (_, _, _, _) => InternalServerError(internalServerErrorTemplate)
@@ -130,12 +133,17 @@ trait FileUploadController extends FrontendController with AuthorisedAndEnrolled
           if (request.body.file("supporting-docs").isDefined) {
             val file = request.body.file("supporting-docs").get
             fileUploadService.validateFile(envelopeID, file.filename, file.ref.length).flatMap {
-              case Seq(true, true, true) =>
+              case Seq(true, true, true, true) =>
+                print("gaz its valid file========================================================")
+                print(s"envelope id  $envelopeID ========================================================")
+
                 fileUploadService.uploadFile(file.ref, file.filename, envelopeID).map {
                   case response if response.status == OK => Redirect(routes.FileUploadController.show())
                   case _ => InternalServerError(internalServerErrorTemplate)
                 }
               case errors =>
+                print("gaz its NOT valid file========================================================")
+
                 processErrors(envelopeID, errors)
             }
           }
@@ -149,7 +157,8 @@ trait FileUploadController extends FrontendController with AuthorisedAndEnrolled
     val messages = Seq(
       "duplicate-name" -> Messages("page.fileUpload.limit.name"),
       "over-size-limit" -> Messages("page.fileUpload.limit.size"),
-      "invalid-format" -> Messages("page.fileUpload.limit.type")
+      "invalid-format" -> Messages("page.fileUpload.limit.type"),
+      "envelope-exceeded" -> Messages("page.fileUpload.envelope.exceeded")
     )
     def createSequence(index: Int = 0, output: Seq[(String, String)] = Seq()): Seq[(String, String)] = {
       if (!errors(index))

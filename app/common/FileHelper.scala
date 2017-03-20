@@ -16,6 +16,8 @@
 
 package common
 
+import models.fileUpload.EnvelopeFile
+
 object FileHelper extends FileHelper {
 
 }
@@ -28,7 +30,7 @@ trait FileHelper {
   final val JPG = "image/jpeg"
   final val DEFAULT = "application/octet-stream"
 
-  def getMimeType(filename: String) : String = {
+  def getMimeType(filename: String): String = {
 
     filename.split('.').drop(1).lastOption match {
       case Some(ext) => ext.toLowerCase() match {
@@ -43,8 +45,14 @@ trait FileHelper {
     }
   }
 
-  def isAllowableFileType(fileName:String): Boolean = {
-     fileName.matches("""^.*\.(jpg|JPG|jpeg|JPEG|xls|XLS|pdf|PDF|xlsx|XLSX)$""")
+  def isAllowableFileType(fileName: String): Boolean = {
+    fileName.matches("""^.*\.(jpg|JPG|jpeg|JPEG|xls|XLS|pdf|PDF|xlsx|XLSX)$""")
+  }
+
+  def withinEnvelopeMaximumSize(existingFiles: Seq[EnvelopeFile], additionalFileSize: Int): Boolean = {
+    // TODO: API is not returning file length in all states. If fixed renable commented line and make EnvelopeFile non optional for length
+    // //val x = (existingFiles.foldLeft(0)(_ + _.length) + additionalFileSize) <= Constants.envelopeLimit
+    (existingFiles.foldLeft(0)(_ + _.length.fold(0)(_.self)) + additionalFileSize) <= Constants.envelopeLimit
   }
 
 }
