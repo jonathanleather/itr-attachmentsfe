@@ -6,7 +6,8 @@
 @(files: Seq[EnvelopeFile], envelopeID: String, backUrl:String, fileErrors: Seq[FormError] = Seq())(implicit request: Request[_], messages: Messages)
 
 @sidebar = {
-<h2 class="heading-small" id="supporting-docs-heading"> @Messages("page.supportingDocuments.SupportingDocuments.heading")</h2>
+<h2 class="heading-small" id="supporting-docs-heading">
+    @Messages("page.supportingDocuments.SupportingDocuments.heading")</h2>
 <ul class="list list-bullet">
     <li id="supporting-docs-one">@Messages("page.supportingDocuments.SupportingDocuments.bullet.one")</li>
     <li id="supporting-docs-two">@Messages("page.supportingDocuments.SupportingDocuments.bullet.two")</li>
@@ -30,30 +31,24 @@
     <h1 id="main-heading" class="form-title heading-xlarge">@Messages("page.fileUpload.heading")</h1>
 
     <div class="form-group">
-        <p id="file-upload-desc">@Messages("page.fileUpload.desc")</p>
+            <div class="form-group"><p id="file-limit-restriction">@Messages("page.fileUpload.restriction")</p></div>
+            <ul class="list list-bullet">
+                <li id="file-condition-size">@Messages("page.fileUpload.condition.size")</li>
+                <li id="file-condition-types">@Messages("page.fileUpload.condition.types")</li>
+                <li id="file-condition-macros">@Messages("page.fileUpload.condition.macros")</li>
+            </ul>
     </div>
+</div>
 
     <div class="form-group">
-        <p id="file-upload-restriction">@Messages("page.fileUpload.restriction")</p>
-    </div>
-
-    <div class="form-group">
-        <details>
-            <summary><span id="what-to-upload" class="summary">@Messages("page.fileUpload.whattoupload")</span></summary>
             <div class="panel panel-indent panel-border-narrow">
-                <div class="form-group"><p id="file-limit-amount">@Messages("page.fileUpload.limit.amount")</p></div>
-                <div class="form-group"><p id="file-limit-type">@Messages("page.fileUpload.limit.type")</p></div>
-                <div class="form-group"><p id="file-options-heading">@Messages("page.fileUpload.options.heading")</p>
-                    <ul class="list list-bullet">
-                        <li id="file-options-save">@Messages("page.fileUpload.options.save")</li>
-                        <li id="file-options-print">@Messages("page.fileUpload.options.print")</li>
-                        <li id="file-options-export">@Messages("page.fileUpload.options.export")</li>
-                    </ul>
+                <div class="form-group">
+                    <p id="file-limit-hint">@Messages("page.fileUpload.hint")</p>
                 </div>
-                <div class="form-group"><p id="file-limit-size">@Messages("page.fileUpload.limit.size")</p></div>
+
+                </div>
             </div>
-        </details>
-    </div>
+
 
     @if(files.size > 0){
     <div class="form-group">
@@ -68,7 +63,8 @@
             @for((file, index) <- files.zipWithIndex) {
             <tr>
                 <td id="file-@{index}">@file.name</td>
-                <td id="remove-@{index}"><a href="@routes.FileDeleteController.show(file.id)">@Messages("page.fileUpload.remove")</a></td>
+                <td id="remove-@{index}"><a href="@routes.FileDeleteController.show(file.id)">@Messages("page.fileUpload.remove")</a>
+                </td>
             </tr>
             }
             </tbody>
@@ -76,14 +72,13 @@
     </div>
     }
 
-    @if(files.size < 5){
     <div id="javascript-disabled" class="form-group">
         @form(action = routes.FileUploadController.upload(), 'enctype -> "multipart/form-data") {
         @NoJavascriptUploadForm(files,envelopeID)
         }
     </div>
 
-    <div id="javascript-enabled" class="form-group" style = "display:none">
+    <div id="javascript-enabled" class="form-group" style="display:none">
         @form(action = routes.FileUploadController.upload(), 'enctype -> "multipart/form-data") {
         @JavascriptUploadForm(files, envelopeID)
         }
@@ -91,18 +86,10 @@
 
     @if(files.size > 0){
     @form(action = routes.FileUploadController.submit()) {
-    <button class="button--link-style removeLink" type="submit" id="continue-link"> @Messages("page.fileUpload.snc")</button>
-    }
-    }
-    } else {
-    <div class="form-group">
-        <p class="indent" id="file-limit-reached">@Messages("page.fileUpload.fileLimitReached")</p>
-    </div>
-
-    @form(action = routes.FileUploadController.submit()) {
-    <button class="button" type="submit" id="continue-link"> @Messages("page.fileUpload.snc")</button>
+    <button class="button--link-style removeLink" type="submit" id="continue-link"> @Messages("page.fileUpload.snc")
+    </button>
     }
     }
 
-</div>
+
 }

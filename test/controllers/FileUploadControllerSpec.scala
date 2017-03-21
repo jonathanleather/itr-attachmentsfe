@@ -301,14 +301,15 @@ class FileUploadControllerSpec extends ControllerSpec {
   }
 
   "Uploading a file to the FileUploadController" when {
-    "the file limit has not been succeeded, the file passes validation and uploads successfully" should {
+    "the file limit has not been exceeded, the file passes validation and uploads successfully" should {
       "redirect to the file upload page" in {
-        when(mockFileUploadService.belowFileNumberLimit(Matchers.eq(envelopeID))(Matchers.any(), Matchers.any()))
-          .thenReturn(Future.successful(true))
+        setupMocks()
         when(mockFileUploadService.validateFile(Matchers.eq(envelopeID), Matchers.eq(fileName), Matchers.eq(tempFile.length))
-        (Matchers.any(), Matchers.any())).thenReturn(Future.successful(Seq(true, true, true)))
+        (Matchers.any(), Matchers.any())).thenReturn(Future.successful(Seq(true, true, true, true)))
         when(mockFileUploadService.uploadFile(Matchers.eq(tempFile), Matchers.eq(fileName), Matchers.eq(envelopeID))(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(HttpResponse(OK)))
+        when(mockKeyStoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.backUrl))(Matchers.any(), Matchers.any()))
+          .thenReturn(Option(testUrl))
         submitWithMultipartFormData(TestController.upload, multipartFormData)(
           result => {
             status(result) shouldBe SEE_OTHER
@@ -326,10 +327,8 @@ class FileUploadControllerSpec extends ControllerSpec {
           .thenReturn(Option(testUrl))
         when(mockKeyStoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.continueUrl))(Matchers.any(), Matchers.any()))
           .thenReturn(Option(testUrl))
-        when(mockFileUploadService.belowFileNumberLimit(Matchers.eq(envelopeID))(Matchers.any(), Matchers.any()))
-          .thenReturn(Future.successful(true))
         when(mockFileUploadService.validateFile(Matchers.eq(envelopeID), Matchers.eq(fileName), Matchers.eq(tempFile.length))
-        (Matchers.any(), Matchers.any())).thenReturn(Future.successful(Seq(false, false, true)))
+        (Matchers.any(), Matchers.any())).thenReturn(Future.successful(Seq(false, false, true, true)))
         submitWithMultipartFormData(TestController.upload, multipartFormData)(
           result => {
             status(result) shouldBe BAD_REQUEST
@@ -340,10 +339,8 @@ class FileUploadControllerSpec extends ControllerSpec {
 
     "the file limit has not been succeeded, the file passes validation and doesn't upload successfully" should {
       "return an INTERNAL_SERVER_ERROR" in {
-        when(mockFileUploadService.belowFileNumberLimit(Matchers.eq(envelopeID))(Matchers.any(), Matchers.any()))
-          .thenReturn(Future.successful(true))
         when(mockFileUploadService.validateFile(Matchers.eq(envelopeID), Matchers.eq(fileName), Matchers.eq(tempFile.length))
-        (Matchers.any(), Matchers.any())).thenReturn(Future.successful(Seq(true, true, true)))
+        (Matchers.any(), Matchers.any())).thenReturn(Future.successful(Seq(true, true, true, true)))
         when(mockFileUploadService.uploadFile(Matchers.eq(tempFile), Matchers.eq(fileName), Matchers.eq(envelopeID))(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR)))
         submitWithMultipartFormData(TestController.upload, multipartFormData)(
@@ -354,23 +351,9 @@ class FileUploadControllerSpec extends ControllerSpec {
       }
     }
 
-    "the file limit has been succeeded" should {
-      "redirect to the file upload page" in {
-        when(mockFileUploadService.belowFileNumberLimit(Matchers.eq(envelopeID))(Matchers.any(), Matchers.any()))
-          .thenReturn(Future.successful(false))
-        submitWithMultipartFormData(TestController.upload, multipartFormData)(
-          result => {
-            status(result) shouldBe SEE_OTHER
-            redirectLocation(result) shouldBe Some(routes.FileUploadController.show().url)
-          }
-        )
-      }
-    }
 
     "no file is added to the form body under supporting-docs" should {
       "redirect to the file upload page" in {
-        when(mockFileUploadService.belowFileNumberLimit(Matchers.eq(envelopeID))(Matchers.any(), Matchers.any()))
-          .thenReturn(Future.successful(true))
         submitWithMultipartFormData(TestController.upload, multipartFormDataNoFile)(
           result => {
             status(result) shouldBe SEE_OTHER

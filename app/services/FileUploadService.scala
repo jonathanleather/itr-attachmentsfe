@@ -18,7 +18,7 @@ package services
 
 import akka.util.ByteString
 import auth.TAVCUser
-import common.{Constants, KeystoreKeys}
+import common.{Constants, FileHelper, KeystoreKeys}
 import connectors.{AttachmentsConnector, FileUploadConnector, S4LConnector}
 import models.fileUpload.{Envelope, EnvelopeFile, MetadataModel}
 import play.api.Logger
@@ -41,52 +41,56 @@ trait FileUploadService {
   val fileUploadConnector: FileUploadConnector
   val s4lConnector: S4LConnector
   val attachmentsConnector: AttachmentsConnector
+  val withinFileSize = true
+  val fileIsUnique = true
+  val fileWithinEnvelopeLimit = true
+
 
   def validateFile(envelopeID: String, fileName: String, fileSize: Int)
                   (implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Seq[Boolean]] = {
 
-    val lessThanFiveMegabytes: Int => Boolean = length => length <= Constants.fileSizeLimit
-    val isPDF: String => Boolean = fileName => fileName.matches("""(.*\.[pP][dD][fF])""")
+    val fileSizeWithinLimit: Int => Boolean = length => length <= Constants.fileSizeLimit
 
-    def fileNameUnique: Future[Boolean] = {
+    def fileNameUnique(files: Seq[EnvelopeFile]): Boolean = {
       def compareFilenames(files: Seq[EnvelopeFile], index: Int = 0): Boolean = {
         if (files(index).name.equalsIgnoreCase(fileName)) false
         else if (index < files.length - 1) compareFilenames(files, index + 1)
         else true
       }
-      getEnvelopeFiles(envelopeID).map {
-        case files if files.nonEmpty => compareFilenames(files)
-        case _ => true
-      }
+
+      compareFilenames(files)
     }
 
-    fileNameUnique.map {
-      nameUnique => Seq(nameUnique, lessThanFiveMegabytes(fileSize), isPDF(fileName))
+    getEnvelopeFiles(envelopeID).map {
+      case files if files.nonEmpty =>
+        if (fileNameUnique(files)) {
+          Seq(fileIsUnique, fileSizeWithinLimit(fileSize), FileHelper.isAllowableFileType(fileName),
+            FileHelper.withinEnvelopeMaximumSize(files, fileSize))
+        }
+        else {
+          Seq(!fileIsUnique, fileSizeWithinLimit(fileSize), FileHelper.isAllowableFileType(fileName),
+            FileHelper.withinEnvelopeMaximumSize(files, fileSize))
+        }
+      case _ => Seq(fileIsUnique, fileSizeWithinLimit(fileSize), FileHelper.isAllowableFileType(fileName), fileWithinEnvelopeLimit)
     }
 
   }
 
-  def belowFileNumberLimit(envelopeID: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Boolean] =
-    getEnvelopeFiles(envelopeID).map {
-      files => files.size < Constants.numberOfFilesLimit
-    }
-
   def getEnvelopeID(createNewID: Boolean = true)(implicit hc: HeaderCarrier, ex: ExecutionContext, user: TAVCUser): Future[String] = {
     s4lConnector.fetchAndGetFormData[String](KeystoreKeys.envelopeID).flatMap {
-      case Some(envelopeID) if envelopeID.nonEmpty => {
+      case Some(envelopeID) if envelopeID.nonEmpty =>
         // make sure this id is not orphaned
         checkEnvelopeStatus(envelopeID).flatMap {
           case Some(envelope) => Future(envelope.id)
           case _ if createNewID => createEnvelopeId
           case _ => Future("")
         }
-      }
       case _ if createNewID => createEnvelopeId
       case _ => Future.successful("")
     }
   }
 
-  private def createEnvelopeId()(implicit hc: HeaderCarrier, ex: ExecutionContext, user: TAVCUser): Future[String]  = {
+  private def createEnvelopeId()(implicit hc: HeaderCarrier, ex: ExecutionContext, user: TAVCUser): Future[String] = {
 
     attachmentsConnector.createEnvelope().map {
       result =>
@@ -100,9 +104,8 @@ trait FileUploadService {
     attachmentsConnector.getEnvelopeStatus(envelopeID).map {
       result => result.status match {
         case OK => result.json.asOpt[Envelope]
-        case _ => {
+        case _ =>
           Logger.warn(s"[FileUploadConnector][checkEnvelopeStatus] Error ${result.status} received.")
-        }
           None
       }
     }
@@ -111,7 +114,7 @@ trait FileUploadService {
   def uploadFile(file: ByteString, fileName: String, envelopeID: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[HttpResponse] = {
     for {
       fileID <- generateFileID(envelopeID)
-      result <- fileUploadConnector.addFileContent(envelopeID, fileID, fileName, file, PDF)
+      result <- fileUploadConnector.addFileContent(envelopeID, fileID, fileName, file, FileHelper.getMimeType(fileName))
     } yield result.status match {
       case OK => HttpResponse(result.status)
       case _ =>
@@ -148,7 +151,6 @@ trait FileUploadService {
         HttpResponse(INTERNAL_SERVER_ERROR)
     }
   }
-
 
   def deleteFile(fileID: String)(implicit hc: HeaderCarrier, ex: ExecutionContext, user: TAVCUser): Future[HttpResponse] =
     getEnvelopeID(createNewID = false).flatMap {

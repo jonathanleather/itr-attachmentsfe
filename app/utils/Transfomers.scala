@@ -15,7 +15,6 @@
  */
 
 package utils
-import java.text.NumberFormat
 import play.api.data.FormError
 
 import scala.util.{Failure, Success, Try}

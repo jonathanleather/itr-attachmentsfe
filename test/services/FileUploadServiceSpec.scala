@@ -44,7 +44,20 @@ class FileUploadServiceSpec extends UnitSpec with MockitoSugar with WithFakeAppl
   val fileID = 1
   val stringFileID = "1"
   val envelopeStatus = "OPEN"
-  val fileName = "test.pdf"
+  val fileNameValidPdf = "testFile.pdf"
+  val fileNameValidDuplicatePdf = "test.pdf"
+  val fileNameValidDuplicateJpeg = "test.jpeg"
+  val fileNameValidDuplicateJpg = "test.jpg"
+  val fileNameValidDuplicateXls = "test.xls"
+  val fileNameValidDuplicateXlsx = "test.xlsx"
+  val fileNameValidXls = "testFile.xls"
+  val fileNameValidXlsx = "testFile.xlsx"
+  val fileNameValidJpg = "testFile.jpg"
+  val fileNameValidJpeg = "testFile.jpeg"
+  val fileNameInvalidBmp = "testFile.bmp"
+  val fileNameInvalidXml = "testFile.xml"
+  val fileNameInvalidDocx = "testFile.docx"
+  val fileNameInvalidDoc = "testFile.doc"
   implicit val hc = HeaderCarrier()
   implicit val user = TAVCUser(ggUser.allowedAuthContext, internalId)
   val tavcReferenceId = "XATAVC000123456"
@@ -69,6 +82,7 @@ class FileUploadServiceSpec extends UnitSpec with MockitoSugar with WithFakeAppl
   |   "status": "PROCESSING",
   |   "name": "test.pdf",
   |   "contentType": "application/pdf",
+  |   "length": 5242880,
   |   "created": "2016-03-31T12:33:45Z",
   |   "metadata": {
   |   },
@@ -77,11 +91,132 @@ class FileUploadServiceSpec extends UnitSpec with MockitoSugar with WithFakeAppl
   |  "status": "$envelopeStatus"
   |}""".stripMargin)
 
+  val envelopeFullEnvelopAtLimit = Json.parse(s"""{
+  |  "id": "$envelopeID",
+  |  "callbackUrl": "test",
+  |  "metadata": {
+  |  },
+  |  "files": [{
+  |   "id": "1",
+  |   "status": "PROCESSING",
+  |   "name": "test.pdf",
+  |   "contentType": "application/pdf",
+  |   "length": 5242880,
+  |   "created": "2016-03-31T12:33:45Z",
+  |   "metadata": {
+  |   },
+  |   "href": "test.url"
+  |  },
+  |  {
+  |   "id": "2",
+  |   "status": "PROCESSING",
+  |   "name": "test.xls",
+  |   "contentType": "application/vnd.ms-excel",
+  |   "length": 5242880,
+  |   "created": "2016-03-31T12:33:45Z",
+  |   "metadata": {
+  |   },
+  |   "href": "test.url"
+  |  },{
+  |   "id": "3",
+  |   "status": "PROCESSING",
+  |   "name": "test.xlsx",
+  |   "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  |   "length": 5242880,
+  |   "created": "2016-03-31T12:33:45Z",
+  |   "metadata": {
+  |   },
+  |   "href": "test.url"
+  |  },{
+  |   "id": "4",
+  |   "status": "PROCESSING",
+  |   "name": "test.jpg",
+  |   "contentType": "image/jpeg",
+  |   "length": 5242880,
+  |   "created": "2016-03-31T12:33:45Z",
+  |   "metadata": {
+  |   },
+  |   "href": "test.url"
+  |  },{
+  |   "id": "5",
+  |   "status": "PROCESSING",
+  |   "name": "test.jpeg",
+  |   "contentType": "image/jpeg",
+  |   "length": 5242880,
+  |   "created": "2016-03-31T12:33:45Z",
+  |   "metadata": {
+  |   },
+  |   "href": "test.url"
+  |  }],
+  |  "status": "$envelopeStatus"
+  |}""".stripMargin)
+
+  val envelopeFullEnvelopeMinus1Byte = Json.parse(s"""{
+   |  "id": "$envelopeID",
+   |  "callbackUrl": "test",
+   |  "metadata": {
+   |  },
+   |  "files": [{
+   |   "id": "1",
+   |   "status": "PROCESSING",
+   |   "name": "test.pdf",
+   |   "contentType": "application/pdf",
+   |   "length": 5242879,
+   |   "created": "2016-03-31T12:33:45Z",
+   |   "metadata": {
+   |   },
+   |   "href": "test.url"
+   |  },
+   |  {
+   |   "id": "2",
+   |   "status": "PROCESSING",
+   |   "name": "test.xls",
+   |   "contentType": "application/vnd.ms-excel",
+   |   "length": 5242880,
+   |   "created": "2016-03-31T12:33:45Z",
+   |   "metadata": {
+   |   },
+   |   "href": "test.url"
+   |  },{
+   |   "id": "3",
+   |   "status": "PROCESSING",
+   |   "name": "test.xlsx",
+   |   "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+   |   "length": 5242880,
+   |   "created": "2016-03-31T12:33:45Z",
+   |   "metadata": {
+   |   },
+   |   "href": "test.url"
+   |  },{
+   |   "id": "4",
+   |   "status": "PROCESSING",
+   |   "name": "test.jpg",
+   |   "contentType": "image/jpeg",
+   |   "length": 5242880,
+   |   "created": "2016-03-31T12:33:45Z",
+   |   "metadata": {
+   |   },
+   |   "href": "test.url"
+   |  },{
+   |   "id": "5",
+   |   "status": "PROCESSING",
+   |   "name": "test.jpeg",
+   |   "contentType": "image/jpeg",
+   |   "length": 5242880,
+   |   "created": "2016-03-31T12:33:45Z",
+   |   "metadata": {
+   |   },
+   |   "href": "test.url"
+   |  }],
+   |  "status": "$envelopeStatus"
+   |}""".stripMargin)
+
+
   val createEnvelopeResponse = Json.parse(s"""{
   | "envelopeID": "$envelopeID"
   |}""".stripMargin)
 
-  val files = Seq(EnvelopeFile("1","PROCESSING","test.pdf","application/pdf","2016-03-31T12:33:45Z",Metadata(None),"test.url"))
+  val files = Seq(EnvelopeFile("1","PROCESSING","test.pdf","application/pdf",Some(5242880),"2016-03-31T12:33:45Z",Metadata(None),"test.url"))
 
   val envelope = Envelope(envelopeID,envelopeStatus,None)
   val envelopeWithFiles = Envelope(envelopeID,envelopeStatus,
@@ -128,38 +263,195 @@ class FileUploadServiceSpec extends UnitSpec with MockitoSugar with WithFakeAppl
 
   "validateFile" when {
 
-    "the file name is unique, the file size is 5MB and the file type is PDF" should {
+    "the file name is unique, the file size is at limit and the file type is xls" should {
 
-      lazy val result = TestService.validateFile(envelopeID, "test2.pdf", Constants.fileSizeLimit)
+      lazy val result = TestService.validateFile(envelopeID, fileNameValidXls, Constants.fileSizeLimit)
 
-      "return Seq(true,true,true)" in {
+      "return Seq(true,true,true,true)" in {
         when(mockAttachmentsConnector.getEnvelopeStatus(Matchers.eq(envelopeID))(Matchers.any()))
           .thenReturn(Future.successful(HttpResponse(OK,Some(envelopeStatusWithFileResponse))))
-        await(result) shouldBe Seq(true, true, true)
+        await(result) shouldBe Seq(true, true, true, true)
       }
 
     }
 
-    "the file name is unique, the file size is over 5MB and the file type is not PDF" should {
+    "the file name is unique, the file size is at limit and the file type is xlsx" should {
 
-      lazy val result = TestService.validateFile(envelopeID, "test.xml", Constants.fileSizeLimit + 1)
+      lazy val result = TestService.validateFile(envelopeID, fileNameValidXlsx, Constants.fileSizeLimit)
 
-      "return Seq(true,false,false)" in {
+      "return Seq(true,true,true,true)" in {
         when(mockAttachmentsConnector.getEnvelopeStatus(Matchers.eq(envelopeID))(Matchers.any()))
           .thenReturn(Future.successful(HttpResponse(OK,Some(envelopeStatusWithFileResponse))))
-        await(result) shouldBe Seq(true, false, false)
+        await(result) shouldBe Seq(true, true, true, true)
       }
 
     }
 
-    "the file name is not unique, the file size is over 5MB and the file type is PDF " should {
+    "the file name is unique, the file size is at limit and the file type is jpg" should {
 
-      lazy val result = TestService.validateFile(envelopeID, fileName, Constants.fileSizeLimit + 1)
+      lazy val result = TestService.validateFile(envelopeID, fileNameValidJpg, Constants.fileSizeLimit)
 
-      "return Seq(false,false,true)" in {
+      "return Seq(true,true,true, true)" in {
         when(mockAttachmentsConnector.getEnvelopeStatus(Matchers.eq(envelopeID))(Matchers.any()))
           .thenReturn(Future.successful(HttpResponse(OK,Some(envelopeStatusWithFileResponse))))
-        await(result) shouldBe Seq(false, false, true)
+        await(result) shouldBe Seq(true, true, true, true)
+      }
+
+    }
+
+
+    "the file name is unique, the file size is at limit and the file type is PDF" should {
+
+      lazy val result = TestService.validateFile(envelopeID, fileNameValidPdf, Constants.fileSizeLimit)
+
+      "return Seq(true,true,true, true)" in {
+        when(mockAttachmentsConnector.getEnvelopeStatus(Matchers.eq(envelopeID))(Matchers.any()))
+          .thenReturn(Future.successful(HttpResponse(OK,Some(envelopeStatusWithFileResponse))))
+        await(result) shouldBe Seq(true, true, true, true)
+      }
+
+    }
+
+    "the file name is unique, the file size is at limit and the file type is not an allowable type (txt)" should {
+
+      lazy val result = TestService.validateFile(envelopeID, fileNameInvalidBmp, Constants.fileSizeLimit)
+
+      "return Seq(true,true,false,true)" in {
+        when(mockAttachmentsConnector.getEnvelopeStatus(Matchers.eq(envelopeID))(Matchers.any()))
+          .thenReturn(Future.successful(HttpResponse(OK,Some(envelopeStatusWithFileResponse))))
+        await(result) shouldBe Seq(true, true, false, true)
+      }
+
+    }
+
+    "the file name is unique, the file size is at limit and the file type is not an allowable type (doc)" should {
+
+      lazy val result = TestService.validateFile(envelopeID, fileNameInvalidDoc, Constants.fileSizeLimit)
+
+      "return Seq(true,true,false,true)" in {
+        when(mockAttachmentsConnector.getEnvelopeStatus(Matchers.eq(envelopeID))(Matchers.any()))
+          .thenReturn(Future.successful(HttpResponse(OK,Some(envelopeStatusWithFileResponse))))
+        await(result) shouldBe Seq(true, true, false, true)
+      }
+
+    }
+
+    "the file name is unique, the file size is at limit and the file type is not an allowable type (docx)" should {
+
+      lazy val result = TestService.validateFile(envelopeID, fileNameInvalidDocx, Constants.fileSizeLimit)
+
+      "return Seq(true,true,false,true)" in {
+        when(mockAttachmentsConnector.getEnvelopeStatus(Matchers.eq(envelopeID))(Matchers.any()))
+          .thenReturn(Future.successful(HttpResponse(OK,Some(envelopeStatusWithFileResponse))))
+        await(result) shouldBe Seq(true, true, false, true)
+      }
+
+    }
+
+    "the file name is unique, the file size is at limit and the file type is an allowable type (pdf) but envelope already at 25MB limit" should {
+
+      lazy val result = TestService.validateFile(envelopeID, fileNameValidPdf, 1)
+
+      "return Seq(true,true,true,false)" in {
+        when(mockAttachmentsConnector.getEnvelopeStatus(Matchers.eq(envelopeID))(Matchers.any()))
+          .thenReturn(Future.successful(HttpResponse(OK,Some(envelopeFullEnvelopAtLimit))))
+        await(result) shouldBe Seq(true, true, true, false)
+      }
+
+    }
+
+    "the file name is unique, the file size is at limit and the file type is an allowable type (pdf) but envelope is 1 byte below limit" should {
+
+      lazy val result = TestService.validateFile(envelopeID, fileNameValidPdf, 1)
+
+      "return Seq(true,true,true, true)" in {
+        when(mockAttachmentsConnector.getEnvelopeStatus(Matchers.eq(envelopeID))(Matchers.any()))
+          .thenReturn(Future.successful(HttpResponse(OK,Some(envelopeFullEnvelopeMinus1Byte))))
+        await(result) shouldBe Seq(true, true, true, true)
+      }
+
+    }
+
+    "the file name is unique, the file size is over at limit and the file type is not an allowable type" should {
+
+      lazy val result = TestService.validateFile(envelopeID, fileNameInvalidXml, Constants.fileSizeLimit + 1)
+
+      "return Seq(true,false,false, true)" in {
+        when(mockAttachmentsConnector.getEnvelopeStatus(Matchers.eq(envelopeID))(Matchers.any()))
+          .thenReturn(Future.successful(HttpResponse(OK,Some(envelopeStatusWithFileResponse))))
+        await(result) shouldBe Seq(true, false, false, true)
+      }
+
+    }
+
+    "the file name is not unique, the file size is over the limit and the file type is PDF " should {
+
+      lazy val result = TestService.validateFile(envelopeID, fileNameValidDuplicatePdf, Constants.fileSizeLimit + 1)
+
+      "return Seq(false,false,true, true)" in {
+        when(mockAttachmentsConnector.getEnvelopeStatus(Matchers.eq(envelopeID))(Matchers.any()))
+          .thenReturn(Future.successful(HttpResponse(OK,Some(envelopeStatusWithFileResponse))))
+        await(result) shouldBe Seq(false, false, true, true)
+      }
+
+    }
+
+    "the file name is not unique, the file size is over the limit and the file type is XLS " should {
+
+      lazy val result = TestService.validateFile(envelopeID, fileNameValidDuplicateXls, Constants.fileSizeLimit + 1)
+
+      "return Seq(false,false,true, false)" in {
+        when(mockAttachmentsConnector.getEnvelopeStatus(Matchers.eq(envelopeID))(Matchers.any()))
+          .thenReturn(Future.successful(HttpResponse(OK,Some(envelopeFullEnvelopAtLimit))))
+        await(result) shouldBe Seq(false, false, true, false)
+      }
+
+    }
+
+    "the file name is not unique, the file size is over the limit and the file type is XLSX " should {
+
+      lazy val result = TestService.validateFile(envelopeID, fileNameValidDuplicateXlsx, Constants.fileSizeLimit + 1)
+
+      "return Seq(false,false,true, false)" in {
+        when(mockAttachmentsConnector.getEnvelopeStatus(Matchers.eq(envelopeID))(Matchers.any()))
+          .thenReturn(Future.successful(HttpResponse(OK,Some(envelopeFullEnvelopAtLimit))))
+        await(result) shouldBe Seq(false, false, true, false)
+      }
+
+    }
+
+    "the file name is not unique, the file size is over the limit and the file type is JPG " should {
+
+      lazy val result = TestService.validateFile(envelopeID, fileNameValidDuplicateJpg, Constants.fileSizeLimit + 1)
+
+      "return Seq(false,false,true, false)" in {
+        when(mockAttachmentsConnector.getEnvelopeStatus(Matchers.eq(envelopeID))(Matchers.any()))
+          .thenReturn(Future.successful(HttpResponse(OK,Some(envelopeFullEnvelopAtLimit))))
+        await(result) shouldBe Seq(false, false, true, false)
+      }
+
+    }
+
+    "the file name is not unique, the file size is over the limit and the file type is JPEG " should {
+
+      lazy val result = TestService.validateFile(envelopeID, fileNameValidDuplicateJpeg, Constants.fileSizeLimit + 1)
+
+      "return Seq(false,false,true, false)" in {
+        when(mockAttachmentsConnector.getEnvelopeStatus(Matchers.eq(envelopeID))(Matchers.any()))
+          .thenReturn(Future.successful(HttpResponse(OK,Some(envelopeFullEnvelopAtLimit))))
+        await(result) shouldBe Seq(false, false, true, false)
+      }
+
+    }
+
+    "the file name is not unique, the file size is over the limit, the file type is not an allowable type and exceeds envelope limit " should {
+
+      lazy val result = TestService.validateFile(envelopeID, fileNameValidDuplicatePdf, Constants.fileSizeLimit + 1)
+
+      "return Seq(false,false,false, false)" in {
+        when(mockAttachmentsConnector.getEnvelopeStatus(Matchers.eq(envelopeID))(Matchers.any()))
+          .thenReturn(Future.successful(HttpResponse(OK,Some(envelopeFullEnvelopAtLimit))))
+        await(result) shouldBe Seq(false, false, true, false)
       }
 
     }
@@ -260,14 +552,14 @@ class FileUploadServiceSpec extends UnitSpec with MockitoSugar with WithFakeAppl
 
     "The envelope has no files and the file is uploaded successfully" should {
 
-      lazy val result = TestService.uploadFile(testFile, fileName, envelopeID)
+      lazy val result = TestService.uploadFile(testFile, fileNameValidPdf, envelopeID)
 
       "Return OK" in {
         when(mockS4LConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.envelopeID))(Matchers.any(), Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(Some(envelopeID)))
         when(mockAttachmentsConnector.getEnvelopeStatus(Matchers.eq(envelopeID))(Matchers.any()))
           .thenReturn(Future.successful(HttpResponse(OK,Some(envelopeStatusResponse))))
-        when(mockFileUploadConnector.addFileContent(Matchers.eq(envelopeID), Matchers.eq(1), Matchers.eq(fileName),
+        when(mockFileUploadConnector.addFileContent(Matchers.eq(envelopeID), Matchers.eq(1), Matchers.eq(fileNameValidPdf),
           Matchers.eq(testFile), Matchers.eq(TestService.PDF))(Matchers.any())).thenReturn(Future.successful(FakeWSResponse(OK)))
         await(result).status shouldBe OK
       }
@@ -276,14 +568,14 @@ class FileUploadServiceSpec extends UnitSpec with MockitoSugar with WithFakeAppl
 
     "The envelope has a file and the file is uploaded successfully" should {
 
-      lazy val result = TestService.uploadFile(testFile, fileName, envelopeID)
+      lazy val result = TestService.uploadFile(testFile, fileNameValidPdf, envelopeID)
 
       "Return OK" in {
         when(mockS4LConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.envelopeID))(Matchers.any(), Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(Some(envelopeID)))
         when(mockAttachmentsConnector.getEnvelopeStatus(Matchers.eq(envelopeID))(Matchers.any()))
           .thenReturn(Future.successful(HttpResponse(OK,Some(envelopeStatusWithFileResponse))))
-        when(mockFileUploadConnector.addFileContent(Matchers.eq(envelopeID), Matchers.eq(2), Matchers.eq(fileName),
+        when(mockFileUploadConnector.addFileContent(Matchers.eq(envelopeID), Matchers.eq(2), Matchers.eq(fileNameValidPdf),
           Matchers.eq(testFile), Matchers.eq(TestService.PDF))(Matchers.any())).thenReturn(Future.successful(FakeWSResponse(OK)))
         await(result).status shouldBe OK
       }
@@ -292,14 +584,14 @@ class FileUploadServiceSpec extends UnitSpec with MockitoSugar with WithFakeAppl
 
     "The file is not uploaded successfully" should {
 
-      lazy val result = TestService.uploadFile(testFile, fileName, envelopeID)
+      lazy val result = TestService.uploadFile(testFile, fileNameValidPdf, envelopeID)
 
       "Return OK" in {
         when(mockS4LConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.envelopeID))(Matchers.any(), Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(Some(envelopeID)))
         when(mockAttachmentsConnector.getEnvelopeStatus(Matchers.eq(envelopeID))(Matchers.any()))
           .thenReturn(Future.successful(HttpResponse(OK,Some(envelopeStatusWithFileResponse))))
-        when(mockFileUploadConnector.addFileContent(Matchers.eq(envelopeID), Matchers.eq(2), Matchers.eq(fileName),
+        when(mockFileUploadConnector.addFileContent(Matchers.eq(envelopeID), Matchers.eq(2), Matchers.eq(fileNameValidPdf),
           Matchers.eq(testFile), Matchers.eq(TestService.PDF))(Matchers.any())).thenReturn(Future.successful(FakeWSResponse(INTERNAL_SERVER_ERROR)))
         await(result).status shouldBe INTERNAL_SERVER_ERROR
       }

@@ -49,16 +49,12 @@ class FileUploadSpec extends BaseSpec {
 
 
       document.body.getElementById("main-heading").text() shouldBe Messages("page.fileUpload.heading")
-      document.body.getElementById("file-upload-desc").text() shouldBe Messages("page.fileUpload.desc")
-      document.body.getElementById("file-upload-restriction").text() shouldBe Messages("page.fileUpload.restriction")
-      document.body.getElementById("what-to-upload").text() shouldBe Messages("page.fileUpload.whattoupload")
-      document.body.getElementById("file-limit-amount").text() shouldBe Messages("page.fileUpload.limit.amount")
-      document.body.getElementById("file-limit-type").text() shouldBe Messages("page.fileUpload.limit.type")
-      document.body.getElementById("file-options-heading").text() shouldBe Messages("page.fileUpload.options.heading")
-      document.body.getElementById("file-options-save").text() shouldBe Messages("page.fileUpload.options.save")
-      document.body.getElementById("file-options-print").text() shouldBe Messages("page.fileUpload.options.print")
-      document.body.getElementById("file-options-export").text() shouldBe Messages("page.fileUpload.options.export")
-      document.body.getElementById("file-limit-size").text() shouldBe Messages("page.fileUpload.limit.size")
+      document.body.getElementById("file-limit-restriction").text() shouldBe Messages("page.fileUpload.restriction")
+      document.body.getElementById("file-condition-size").text() shouldBe Messages("page.fileUpload.condition.size")
+      document.body.getElementById("file-condition-types").text() shouldBe Messages("page.fileUpload.condition.types")
+      document.body.getElementById("file-condition-macros").text() shouldBe Messages("page.fileUpload.condition.macros")
+      document.body.getElementById("file-limit-hint").text() shouldBe Messages("page.fileUpload.hint")
+
 
       //file table should not exist
       intercept[NullPointerException] {
@@ -91,33 +87,27 @@ class FileUploadSpec extends BaseSpec {
       document.body.getElementById("progress-section").text shouldBe Messages("common.section.progress.company.details.five")
 
       document.body.getElementById("main-heading").text() shouldBe Messages("page.fileUpload.heading")
-      document.body.getElementById("file-upload-desc").text() shouldBe Messages("page.fileUpload.desc")
-      document.body.getElementById("file-upload-restriction").text() shouldBe Messages("page.fileUpload.restriction")
-      document.body.getElementById("what-to-upload").text() shouldBe Messages("page.fileUpload.whattoupload")
-      document.body.getElementById("file-limit-amount").text() shouldBe Messages("page.fileUpload.limit.amount")
-      document.body.getElementById("file-limit-type").text() shouldBe Messages("page.fileUpload.limit.type")
-      document.body.getElementById("file-options-heading").text() shouldBe Messages("page.fileUpload.options.heading")
-      document.body.getElementById("file-options-save").text() shouldBe Messages("page.fileUpload.options.save")
-      document.body.getElementById("file-options-print").text() shouldBe Messages("page.fileUpload.options.print")
-      document.body.getElementById("file-options-export").text() shouldBe Messages("page.fileUpload.options.export")
-      document.body.getElementById("file-limit-size").text() shouldBe Messages("page.fileUpload.limit.size")
+      document.body.getElementById("file-limit-restriction").text() shouldBe Messages("page.fileUpload.restriction")
+      document.body.getElementById("file-condition-size").text() shouldBe Messages("page.fileUpload.condition.size")
+      document.body.getElementById("file-condition-types").text() shouldBe Messages("page.fileUpload.condition.types")
+      document.body.getElementById("file-condition-macros").text() shouldBe Messages("page.fileUpload.condition.macros")
+      document.body.getElementById("file-limit-hint").text() shouldBe Messages("page.fileUpload.hint")
+
 
       //file table
       lazy val filesTable = document.getElementById("files-table").select("tbody")
       filesTable.select("tr").get(0).getElementById("file-0").text() shouldBe "testOne.pdf"
       filesTable.select("tr").get(0).getElementById("remove-0").text() shouldBe Messages("page.fileUpload.remove")
-      filesTable.select("tr").get(1).getElementById("file-1").text() shouldBe "testTwo.pdf"
+      filesTable.select("tr").get(1).getElementById("file-1").text() shouldBe "testTwo.xls"
       filesTable.select("tr").get(1).getElementById("remove-1").text() shouldBe Messages("page.fileUpload.remove")
 
       document.body.getElementById("continue-link").text() shouldBe Messages("page.fileUpload.snc")
 
-      <!--TODO: add to test when backlink to bavkUrl passed to service has been added -->
-      <!--document.body.getElementById("progress-section").text shouldBe Messages("common.section.progress.company.details.five")-->
     }
 
     "contain the correct elements when loaded with 5 files" in {
 
-      lazy val page = FileUpload(maxFiles, envelopeID, "http://test/back")(fakeRequest, applicationMessages)
+      lazy val page = FileUpload(fiveFiles, envelopeID, "http://test/back")(fakeRequest, applicationMessages)
       lazy val document = Jsoup.parse(page.body)
 
       //title and heading
@@ -133,35 +123,27 @@ class FileUploadSpec extends BaseSpec {
 
 
       document.body.getElementById("main-heading").text() shouldBe Messages("page.fileUpload.heading")
-      document.body.getElementById("file-upload-desc").text() shouldBe Messages("page.fileUpload.desc")
-      document.body.getElementById("file-upload-restriction").text() shouldBe Messages("page.fileUpload.restriction")
-      document.body.getElementById("what-to-upload").text() shouldBe Messages("page.fileUpload.whattoupload")
-      document.body.getElementById("file-limit-amount").text() shouldBe Messages("page.fileUpload.limit.amount")
-      document.body.getElementById("file-limit-type").text() shouldBe Messages("page.fileUpload.limit.type")
-      document.body.getElementById("file-options-heading").text() shouldBe Messages("page.fileUpload.options.heading")
-      document.body.getElementById("file-options-save").text() shouldBe Messages("page.fileUpload.options.save")
-      document.body.getElementById("file-options-print").text() shouldBe Messages("page.fileUpload.options.print")
-      document.body.getElementById("file-options-export").text() shouldBe Messages("page.fileUpload.options.export")
-      document.body.getElementById("file-limit-size").text() shouldBe Messages("page.fileUpload.limit.size")
+      document.body.getElementById("file-limit-restriction").text() shouldBe Messages("page.fileUpload.restriction")
+      document.body.getElementById("file-condition-size").text() shouldBe Messages("page.fileUpload.condition.size")
+      document.body.getElementById("file-condition-types").text() shouldBe Messages("page.fileUpload.condition.types")
+      document.body.getElementById("file-condition-macros").text() shouldBe Messages("page.fileUpload.condition.macros")
+      document.body.getElementById("file-limit-hint").text() shouldBe Messages("page.fileUpload.hint")
 
       //file table
       lazy val filesTable = document.getElementById("files-table").select("tbody")
       filesTable.select("tr").get(0).getElementById("file-0").text() shouldBe "testOne.pdf"
       filesTable.select("tr").get(0).getElementById("remove-0").text() shouldBe Messages("page.fileUpload.remove")
-      filesTable.select("tr").get(1).getElementById("file-1").text() shouldBe "testTwo.pdf"
+      filesTable.select("tr").get(1).getElementById("file-1").text() shouldBe "testTwo.xls"
       filesTable.select("tr").get(1).getElementById("remove-1").text() shouldBe Messages("page.fileUpload.remove")
-      filesTable.select("tr").get(2).getElementById("file-2").text() shouldBe "testThree.pdf"
+      filesTable.select("tr").get(2).getElementById("file-2").text() shouldBe "testThree.xlsx"
       filesTable.select("tr").get(2).getElementById("remove-2").text() shouldBe Messages("page.fileUpload.remove")
-      filesTable.select("tr").get(3).getElementById("file-3").text() shouldBe "testFour.pdf"
+      filesTable.select("tr").get(3).getElementById("file-3").text() shouldBe "testFour.jpg"
       filesTable.select("tr").get(3).getElementById("remove-3").text() shouldBe Messages("page.fileUpload.remove")
-      filesTable.select("tr").get(4).getElementById("file-4").text() shouldBe "testFive.pdf"
+      filesTable.select("tr").get(4).getElementById("file-4").text() shouldBe "testFive.jpeg"
       filesTable.select("tr").get(4).getElementById("remove-4").text() shouldBe Messages("page.fileUpload.remove")
 
-      document.body.getElementById("file-limit-reached").text() shouldBe Messages("page.fileUpload.fileLimitReached")
       document.body.getElementById("continue-link").text() shouldBe Messages("page.fileUpload.snc")
 
-      <!--TODO: add to test when backlink to bavkUrl passed to service has been added -->
-      <!--document.body.getElementById("progress-section").text shouldBe Messages("common.section.progress.company.details.five") -->
     }
   }
 

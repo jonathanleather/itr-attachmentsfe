@@ -74,17 +74,14 @@ trait FileUploadController extends FrontendController with AuthorisedAndEnrolled
         savedUrl <- keyStoreConnector.fetchAndGetFormData[String](KeystoreKeys.continueUrl)
         savedBackUrl <- keyStoreConnector.fetchAndGetFormData[String](KeystoreKeys.backUrl)
       } yield (envelopeID, files, savedUrl, savedBackUrl) match {
-        case (_, _, None, _) if continueUrl.fold("")(_.toString).length == 0 => {
+        case (_, _, None, _) if continueUrl.fold("")(_.toString).length == 0 =>
           Logger.warn("[FileUploadController][show] Required Continue Url not passed")
           BadRequest(badRequestTemplate)
-        }
-        case (_, _, _, None) if backUrl.fold("")(_.toString).length == 0 => {
+        case (_, _, _, None) if backUrl.fold("")(_.toString).length == 0 =>
           Logger.warn("[FileUploadController][show] Required back Url not passed")
           BadRequest(badRequestTemplate)
-        }
-        case (_, _, _, _) if envelopeID.nonEmpty => {
+        case (_, _, _, _) if envelopeID.nonEmpty =>
           Ok(FileUpload(files, envelopeID, if (urlBack.length > 0) urlBack else savedBackUrl.getOrElse("")))
-        }
         case (_, _, _, _) => InternalServerError(internalServerErrorTemplate)
       }
   }
@@ -92,20 +89,18 @@ trait FileUploadController extends FrontendController with AuthorisedAndEnrolled
   val submit = AuthorisedAndEnrolled.async { implicit user => implicit request =>
     def routeRequest(url: Option[String], envelopeId: String): Future[Result] = {
       url match {
-        case Some(data) if data.length > 0 => {
+        case Some(data) if data.length > 0 =>
           keyStoreConnector.clearKeystore()
           Future.successful(Redirect(s"$data?envelopeId=$envelopeId"))
-        }
-        case _ => {
+        case _ =>
           keyStoreConnector.clearKeystore()
           Future.successful(InternalServerError(internalServerErrorTemplate))
-        }
       }
     }
 
     for {
       continueUrl <- keyStoreConnector.fetchAndGetFormData[String](KeystoreKeys.continueUrl)
-      envelopeId <- FileUploadService.getEnvelopeID(false)
+      envelopeId <- FileUploadService.getEnvelopeID(createNewID = false)
       route <- routeRequest(continueUrl, envelopeId)
 
     } yield route
@@ -125,37 +120,30 @@ trait FileUploadController extends FrontendController with AuthorisedAndEnrolled
       }
 
       val envelopeID = request.body.dataParts("envelope-id").head
-      fileUploadService.belowFileNumberLimit(envelopeID).flatMap {
-        case true =>
-          if (request.body.file("supporting-docs").isDefined) {
-            val file = request.body.file("supporting-docs").get
-            fileUploadService.validateFile(envelopeID, file.filename, file.ref.length).flatMap {
-              case Seq(true, true, true) =>
-                fileUploadService.uploadFile(file.ref, file.filename, envelopeID).map {
-                  case response if response.status == OK => Redirect(routes.FileUploadController.show())
-                  case _ => InternalServerError(internalServerErrorTemplate)
-                }
-              case errors =>
-                processErrors(envelopeID, errors)
+
+      if (request.body.file("supporting-docs").isDefined) {
+        val file = request.body.file("supporting-docs").get
+        fileUploadService.validateFile(envelopeID, file.filename, file.ref.length).flatMap {
+          case Seq(true, true, true, true) =>
+
+
+            fileUploadService.uploadFile(file.ref, file.filename, envelopeID).map {
+              case response if response.status == OK => Redirect(routes.FileUploadController.show())
+              case _ => InternalServerError(internalServerErrorTemplate)
             }
-          }
-          else Future.successful(Redirect(routes.FileUploadController.show()))
-        case false => Future.successful(Redirect(routes.FileUploadController.show()))
+          case errors => processErrors(envelopeID, errors)
+        }
       }
+      else Future.successful(Redirect(routes.FileUploadController.show()))
   }
 
-  //  def closeEnvelope(tavcRef: String, envelopeId: String, id: String): Action[AnyContent] = Action.async { implicit request =>
-  //    fileUploadService.closeEnvelope(tavcRef, envelopeId, id).map {
-  //      responseReceived =>
-  //        Status(responseReceived.status)(responseReceived.body)
-  //    }
-  //  }
 
   private def generateFormErrors(errors: Seq[Boolean]): Seq[FormError] = {
     val messages = Seq(
       "duplicate-name" -> Messages("page.fileUpload.limit.name"),
       "over-size-limit" -> Messages("page.fileUpload.limit.size"),
-      "invalid-format" -> Messages("page.fileUpload.limit.type")
+      "invalid-format" -> Messages("page.fileUpload.limit.type"),
+      "envelope-exceeded" -> Messages("page.fileUpload.envelope.exceeded")
     )
     def createSequence(index: Int = 0, output: Seq[(String, String)] = Seq()): Seq[(String, String)] = {
       if (!errors(index))

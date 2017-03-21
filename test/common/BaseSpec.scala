@@ -42,13 +42,13 @@ trait BaseSpec extends UnitSpec with OneAppPerSuite with MockitoSugar with FakeR
 
 
   val metaData = Metadata(None)
-  val fileOne = EnvelopeFile("1","status","testOne.pdf","pdf","dateCreated",metaData,"href")
-  val fileTwo = EnvelopeFile("2","status","testTwo.pdf","pdf","dateCreated",metaData,"href")
-  val fileThree = EnvelopeFile("3","status","testThree.pdf","pdf","dateCreated",metaData,"href")
-  val fileFour = EnvelopeFile("4","status","testFour.pdf","pdf","dateCreated",metaData,"href")
-  val fileFive = EnvelopeFile("5","status","testFive.pdf","pdf","dateCreated",metaData,"href")
+  val fileOne = EnvelopeFile("1","status","testOne.pdf","pdf", Some(5242880), "dateCreated",metaData,"href")
+  val fileTwo = EnvelopeFile("2","status","testTwo.xls","xls",Some(5242880),"dateCreated",metaData,"href")
+  val fileThree = EnvelopeFile("3","status","testThree.xlsx","xlsx",Some(5242880),"dateCreated",metaData,"href")
+  val fileFour = EnvelopeFile("4","status","testFour.jpg","jpg",Some(5242880),"dateCreated",metaData,"href")
+  val fileFive = EnvelopeFile("5","status","testFive.jpeg","jpeg",Some(5242880),"dateCreated",metaData,"href")
   val files = Seq(fileOne,fileTwo)
-  val maxFiles = Seq(fileOne,fileTwo,fileThree,fileFour,fileFive)
+  val fiveFiles = Seq(fileOne,fileTwo,fileThree,fileFour,fileFive)
 
   val envelopeId = "1111111111111111111"
   val fileId = "1"
