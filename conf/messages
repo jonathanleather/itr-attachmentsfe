@@ -96,7 +96,7 @@ page.fileUpload.validation.type=TEST TYPE
 page.fileUpload.validation.amount=TEST AMOUNT
 page.fileUpload.remove=Remove
 page.fileUpload.fileLimitReached=You have uploaded 5 files.
-page.fileUpload.envelope.exceeded=The total size of the files you upload must be 25 megabytes (25MB) or less
+page.fileUpload.envelope.exceeded=You can''t add files with a total size of more than 25 megabytes (25MB)
 page.fileUpload.uploadControl=Upload input field
 
 #file delete
