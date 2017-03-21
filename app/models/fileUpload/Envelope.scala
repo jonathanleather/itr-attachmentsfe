@@ -24,7 +24,8 @@ object Metadata {
   implicit val formats = Json.format[Metadata]
 }
 //TODO: API is not returning file length in all states. If fixed make length non optional
-case class EnvelopeFile(id: String, status: String, name: String, contentType: String, length:Option[Int] = Some(0), created: String, metadata: Metadata, href: String)
+case class EnvelopeFile(id: String, status: String, name: String, contentType: String, length:Option[Int] = Some(0),
+                        created: String, metadata: Metadata, href: String)
 
 object EnvelopeFile {
   implicit val formats = Json.format[EnvelopeFile]

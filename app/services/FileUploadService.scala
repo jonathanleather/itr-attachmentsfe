@@ -62,9 +62,8 @@ trait FileUploadService {
     }
 
     getEnvelopeFiles(envelopeID).map {
-      case files if files.nonEmpty => {
+      case files if files.nonEmpty =>
         if (fileNameUnique(files)) {
-          println
           Seq(fileIsUnique, fileSizeWithinLimit(fileSize), FileHelper.isAllowableFileType(fileName),
             FileHelper.withinEnvelopeMaximumSize(files, fileSize))
         }
@@ -72,16 +71,10 @@ trait FileUploadService {
           Seq(!fileIsUnique, fileSizeWithinLimit(fileSize), FileHelper.isAllowableFileType(fileName),
             FileHelper.withinEnvelopeMaximumSize(files, fileSize))
         }
-      }
       case _ => Seq(fileIsUnique, fileSizeWithinLimit(fileSize), FileHelper.isAllowableFileType(fileName), fileWithinEnvelopeLimit)
     }
 
   }
-
-  def belowFileNumberLimit(envelopeID: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Boolean] =
-    getEnvelopeFiles(envelopeID).map {
-      files => files.size < Constants.numberOfFilesLimit
-    }
 
   def getEnvelopeID(createNewID: Boolean = true)(implicit hc: HeaderCarrier, ex: ExecutionContext, user: TAVCUser): Future[String] = {
     s4lConnector.fetchAndGetFormData[String](KeystoreKeys.envelopeID).flatMap {

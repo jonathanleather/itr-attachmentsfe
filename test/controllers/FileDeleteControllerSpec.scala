@@ -60,7 +60,7 @@ class FileDeleteControllerSpec extends ControllerSpec{
 
   def setupShowMocks(){
     when(TestFileDeleteController.fileUploadService.getEnvelopeID(Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(envelopeId)
-    when(TestFileDeleteController.fileUploadService.getEnvelopeFiles(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(maxFiles)
+    when(TestFileDeleteController.fileUploadService.getEnvelopeFiles(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(fiveFiles)
   }
   def setupSubmitMocks(httpResponse: HttpResponse){
     when(TestFileDeleteController.fileUploadService.deleteFile(Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).

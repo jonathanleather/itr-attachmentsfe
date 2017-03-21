@@ -79,17 +79,13 @@ common.error.summary.heading=This page has errors
 #file upload
 page.fileUpload.title=Upload your supporting documents
 page.fileUpload.heading=Upload your supporting documents
-page.fileUpload.desc=Use this section to upload documents to support your application
-page.fileUpload.restriction=You can only upload one at a time
-page.fileUpload.whattoupload=What to upload
-page.fileUpload.limit.amount=You can upload up to 5 documents.
-page.fileUpload.limit.type=Each file must be in PDF, JPEG or Excel format
+page.fileUpload.restriction=You can only upload one at a time, each file must:
 page.fileUpload.limit.size=Each file must be less than 10 megabytes (10MB)
 page.fileUpload.limit.name=Each document must have a unique name
-page.fileUpload.options.heading=You can convert to PDF by opening your document and selecting one of these:
-page.fileUpload.options.save=save as PDF
-page.fileUpload.options.print=print to PDF
-page.fileUpload.options.export=export as PDF
+page.fileUpload.condition.size=be 10 megabytes (10MB) or less
+page.fileUpload.condition.types=be in PDF, JPEG or Excel format
+page.fileUpload.condition.macros=not contain any macros
+page.fileUpload.hint=The total size of the files you upload must be 25 megabytes (25MB) or less.
 page.fileUpload.table.heading=Your uploaded documents
 page.fileUpload.upload=Upload a document
 page.fileUpload.upload.another=Upload another document
@@ -101,6 +97,7 @@ page.fileUpload.validation.amount=TEST AMOUNT
 page.fileUpload.remove=Remove
 page.fileUpload.fileLimitReached=You have uploaded 5 files.
 page.fileUpload.envelope.exceeded=The total size of the files you upload must be 25 megabytes (25MB) or less
+page.fileUpload.uploadControl=Upload input field
 
 #file delete
 page.fileDelete.title=Confirm that you want to remove this document
