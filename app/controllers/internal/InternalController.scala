@@ -42,7 +42,7 @@ trait InternalController extends FrontendController with AuthorisedAndEnrolledFo
     }. recover {
       case e: Exception => {
         Logger.warn(s"[InternalController][closeEnvelope] Error response status ${e.getMessage} received.")
-        InternalServerError//(INTERNAL_SERVER_ERROR)
+        Ok
       }
     }
   }
