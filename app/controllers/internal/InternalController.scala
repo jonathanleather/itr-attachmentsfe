@@ -19,6 +19,7 @@ package controllers.internal
 import auth.AuthorisedAndEnrolledForTAVC
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.EnrolmentConnector
+import play.api.Logger
 import play.api.mvc.{Action, AnyContent}
 import services.FileUploadService
 import uk.gov.hmrc.play.frontend.controller.FrontendController
@@ -39,7 +40,10 @@ trait InternalController extends FrontendController with AuthorisedAndEnrolledFo
       responseReceived =>
         Status(responseReceived.status)(responseReceived.body)
     }. recover {
-      case e: Exception => Status(INTERNAL_SERVER_ERROR)
+      case e: Exception => {
+        Logger.warn(s"[InternalController][closeEnvelope] Error response status ${e.getMessage} received.")
+        InternalServerError//(INTERNAL_SERVER_ERROR)
+      }
     }
   }
 
