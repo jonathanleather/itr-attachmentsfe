@@ -38,6 +38,8 @@ trait InternalController extends FrontendController with AuthorisedAndEnrolledFo
     fileUploadService.closeEnvelope(tavcRef, envelopeId, id).map {
       responseReceived =>
         Status(responseReceived.status)(responseReceived.body)
+    }. recover {
+      case e: Exception => Status(INTERNAL_SERVER_ERROR)
     }
   }
 
