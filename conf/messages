@@ -99,8 +99,8 @@ page.fileUpload.uploadControl=Upload input field
 page.fileUpload.limit.type=Each file must be in PDF, JPEG or Excel format
 
 #file delete
-page.fileDelete.title=Confirm that you want to remove this document
-page.fileDelete.heading=Confirm that you want to remove this document
+page.fileDelete.title=Confirm you want to remove this document
+page.fileDelete.heading=Confirm you want to remove this document
 page.fileDelete.hint=This will remove the document {0}
 page.fileDelete.confirm=Remove
 page.fileDelete.cancel=Cancel and go back
