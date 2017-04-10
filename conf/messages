@@ -86,7 +86,7 @@ page.fileUpload.condition.size=be less than 10 megabytes (10MB)
 page.fileUpload.condition.types=be in PDF, JPEG or Excel format
 page.fileUpload.condition.macros=not contain any macros
 page.fileUpload.hint=The total size of the files you upload must be 25 megabytes (25MB) or less.
-page.fileUpload.table.heading=Your uploaded documents
+page.fileUpload.table.heading=Your supporting documents
 page.fileUpload.upload=Upload a document
 page.fileUpload.upload.another=Upload another document
 page.fileUpload.continue=Continue
@@ -99,11 +99,11 @@ page.fileUpload.uploadControl=Upload input field
 page.fileUpload.limit.type=Each file must be in PDF, JPEG or Excel format
 
 #file delete
-page.fileDelete.title=Confirm that you want to remove this document
-page.fileDelete.heading=Confirm that you want to remove this document
+page.fileDelete.title=Confirm you want to remove this document
+page.fileDelete.heading=Confirm you want to remove this document
 page.fileDelete.hint=This will remove the document {0}
 page.fileDelete.confirm=Remove
-page.fileDelete.cancel=Cancel remove and go back
+page.fileDelete.cancel=Cancel and go back
 
 ## Feedback ##
 feedback.title = Feedback
