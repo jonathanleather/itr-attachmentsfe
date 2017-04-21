@@ -30,7 +30,7 @@ trait AppConfig {
   val introductionUrl: String
   val subscriptionUrl: String
   val contactFormServiceIdentifier: String
-  val contactFrontendService: String
+  val contactFrontendPartialBaseUrl: String
   val signOutPageUrl: String
   val attachmentsUrl: String
   val fileUploadUrl: String
@@ -49,10 +49,14 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
   override lazy val subscriptionUrl: String = loadConfig("investment-tax-relief-subscription.url")
   override lazy val signOutPageUrl: String = configuration.getString(s"sign-out-page.url").getOrElse("")
 
-  override lazy val contactFrontendService = loadConfig("contact-frontend.url")
-  override val contactFormServiceIdentifier = "TAVC"
-  override lazy val reportAProblemPartialUrl = s"$contactFrontendService/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  override lazy val reportAProblemNonJSUrl = s"$contactFrontendService/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+  //Contact Frontend Config
+  protected lazy val contactFrontendService = baseUrl("contact-frontend")
+  protected lazy val contactHost = loadConfig("contact-frontend.host")
+  override lazy val contactFormServiceIdentifier = "TAVC"
+  override lazy val contactFrontendPartialBaseUrl = s"$contactFrontendService"
+  override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
+  override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+
   override lazy val attachmentsUrl = baseUrl("investment-tax-relief-attachments")
   override lazy val fileUploadUrl: String = loadConfig("file-upload.url")
 }
