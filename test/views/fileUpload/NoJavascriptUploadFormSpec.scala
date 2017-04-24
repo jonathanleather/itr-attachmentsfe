@@ -35,7 +35,7 @@ class NoJavascriptUploadFormSpec extends BaseSpec {
 
       //Dynamic button
       document.body.getElementsByAttributeValue("style", "display: none;").size() shouldBe 0
-      document.body.getElementById("upload-button").text() shouldBe Messages("page.fileUpload.upload")
+      document.body.getElementById("upload-button-nojs").text() shouldBe Messages("page.fileUpload.upload")
     }
 
     "contain the correct elements when loaded with 1 or more files" in {
@@ -45,7 +45,7 @@ class NoJavascriptUploadFormSpec extends BaseSpec {
 
       //File upload should be invisible
       document.body.getElementsByAttributeValue("style", "display: none;").size() shouldBe 0
-      document.body.getElementById("upload-button").text() shouldBe Messages("page.fileUpload.upload.another")
+      document.body.getElementById("upload-button-nojs").text() shouldBe Messages("page.fileUpload.upload.another")
     }
 
   }
