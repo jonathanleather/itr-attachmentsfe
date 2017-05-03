@@ -17,7 +17,7 @@
 package controllers
 
 import akka.util.ByteString
-import config.FrontendGlobal.{internalServerErrorTemplate, badRequestTemplate}
+import config.FrontendGlobal.{badRequestTemplate, internalServerErrorTemplate}
 import auth.AuthorisedAndEnrolledForTAVC
 import common.KeystoreKeys
 import config.{FrontendAppConfig, FrontendAuthConnector}
@@ -33,6 +33,8 @@ import views.html.fileUpload.FileUpload
 import uk.gov.hmrc.play.http.HeaderCarrier
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
+import uk.gov.hmrc.play.binders
+
 
 import scala.concurrent.Future
 
@@ -55,35 +57,29 @@ trait FileUploadController extends FrontendController with AuthorisedAndEnrolled
       val urlBack = backUrl.fold("")(_.toString)
       val urlContinue = continueUrl.fold("")(_.toString)
 
-      def processQueryString(cUrl: String, bUrl: String) = {
-
-        if (cUrl.length > 0) {
-          keyStoreConnector.saveFormData(KeystoreKeys.continueUrl, cUrl)
-        }
-
-        if (bUrl.length > 0) {
-          keyStoreConnector.saveFormData(KeystoreKeys.backUrl, bUrl)
-        }
+      def processQueryString(cUrl: String, bUrl: String): Boolean = {
+        fileUploadService.storeRedirectParameterIfValid(cUrl, KeystoreKeys.continueUrl, keyStoreConnector) &&
+          fileUploadService.storeRedirectParameterIfValid(bUrl, KeystoreKeys.backUrl, keyStoreConnector)
       }
 
-      processQueryString(urlContinue, urlBack)
-
-      for {
-        envelopeID <- fileUploadService.getEnvelopeID()
-        files <- fileUploadService.getEnvelopeFiles(envelopeID)
-        savedUrl <- keyStoreConnector.fetchAndGetFormData[String](KeystoreKeys.continueUrl)
-        savedBackUrl <- keyStoreConnector.fetchAndGetFormData[String](KeystoreKeys.backUrl)
-      } yield (envelopeID, files, savedUrl, savedBackUrl) match {
-        case (_, _, None, _) if continueUrl.fold("")(_.toString).length == 0 =>
-          Logger.warn("[FileUploadController][show] Required Continue Url not passed")
-          BadRequest(badRequestTemplate)
-        case (_, _, _, None) if backUrl.fold("")(_.toString).length == 0 =>
-          Logger.warn("[FileUploadController][show] Required back Url not passed")
-          BadRequest(badRequestTemplate)
-        case (_, _, _, _) if envelopeID.nonEmpty =>
-          Ok(FileUpload(files, envelopeID, if (urlBack.length > 0) urlBack else savedBackUrl.getOrElse("")))
-        case (_, _, _, _) => InternalServerError(internalServerErrorTemplate)
-      }
+      if(processQueryString(urlContinue, urlBack)) {
+        for {
+          envelopeID <- fileUploadService.getEnvelopeID()
+          files <- fileUploadService.getEnvelopeFiles(envelopeID)
+          savedUrl <- keyStoreConnector.fetchAndGetFormData[String](KeystoreKeys.continueUrl)
+          savedBackUrl <- keyStoreConnector.fetchAndGetFormData[String](KeystoreKeys.backUrl)
+        } yield (envelopeID, files, savedUrl, savedBackUrl) match {
+          case (_, _, None, _) if continueUrl.fold("")(_.self).length == 0 =>
+            Logger.warn("[FileUploadController][show] Required Continue Url not passed")
+            BadRequest(badRequestTemplate)
+          case (_, _, _, None) if backUrl.fold("")(_.self).length == 0 =>
+            Logger.warn("[FileUploadController][show] Required back Url not passed")
+            BadRequest(badRequestTemplate)
+          case (_, _, _, _) if envelopeID.nonEmpty =>
+            Ok(FileUpload(files, envelopeID, if (urlBack.length > 0) urlBack else savedBackUrl.getOrElse("")))
+          case (_, _, _, _) => InternalServerError(internalServerErrorTemplate)
+        }
+      } else Future.successful(BadRequest(badRequestTemplate))
   }
 
   val submit = AuthorisedAndEnrolled.async { implicit user => implicit request =>
