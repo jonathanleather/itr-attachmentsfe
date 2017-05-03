@@ -34,6 +34,7 @@ trait AppConfig {
   val signOutPageUrl: String
   val attachmentsUrl: String
   val fileUploadUrl: String
+  val baseUrl: String
 }
 
 object FrontendAppConfig extends AppConfig with ServicesConfig {
@@ -59,4 +60,5 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
 
   override lazy val attachmentsUrl = baseUrl("investment-tax-relief-attachments")
   override lazy val fileUploadUrl: String = loadConfig("file-upload.url")
+  override lazy val baseUrl: String = loadConfig("location-base.url")
 }

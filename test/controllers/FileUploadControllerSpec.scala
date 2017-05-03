@@ -244,7 +244,10 @@ class FileUploadControllerSpec extends ControllerSpec {
         .thenReturn(Future.successful(Option(testUrl)))
       when(mockKeyStoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.continueUrl))(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(Option(testUrl)))
-      showWithSessionAndAuth(TestController.show(None, Some("back")))(
+      when(mockFileUploadService.storeRedirectParameterIfValid(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
+        .thenReturn(true)
+
+      showWithSessionAndAuth(TestController.show(None, Some("http://localhost:")))(
         result => {
           status(result) shouldBe OK
         }
@@ -260,13 +263,57 @@ class FileUploadControllerSpec extends ControllerSpec {
         .thenReturn(Option(testUrl))
       when(mockKeyStoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.continueUrl))(Matchers.any(), Matchers.any()))
         .thenReturn(Option(testUrl))
-      showWithSessionAndAuth(TestController.show(Some("continue"), None))(
+      when(mockFileUploadService.storeRedirectParameterIfValid(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
+        .thenReturn(true)
+
+      showWithSessionAndAuth(TestController.show(Some("http://localhost:9785/tests"), None))(
         result => {
           status(result) shouldBe OK
         }
       )
     }
   }
+
+
+  "Sending a GET request to FileUploadController when backurl is invalid" should {
+    "return a 400 when no matching back Url is returned from keystore and passed URL fails validation" in {
+      mockEnrolledRequest()
+      setupMocks()
+      when(mockKeyStoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.backUrl))(Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(None))
+      when(mockKeyStoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.continueUrl))(Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(Option(testUrl)))
+      when(mockFileUploadService.storeRedirectParameterIfValid(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
+        .thenReturn(false)
+
+      showWithSessionAndAuth(TestController.show(None, Some("http://invalid:")))(
+        result => {
+          status(result) shouldBe BAD_REQUEST
+        }
+      )
+    }
+  }
+
+  "Sending a GET request to FileUploadController when continueUrl is invalid" should {
+    "return a 400 when no matching continueUrl Url is returned from keystore and passed URL fails validation" in {
+      mockEnrolledRequest()
+      setupMocks()
+      when(mockKeyStoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.backUrl))(Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(Option(testUrl)))
+      when(mockKeyStoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.continueUrl))(Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(None))
+      when(mockFileUploadService.storeRedirectParameterIfValid(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
+        .thenReturn(false)
+
+      showWithSessionAndAuth(TestController.show(Some("http://invalid:"), None))(
+        result => {
+          status(result) shouldBe BAD_REQUEST
+        }
+      )
+    }
+  }
+
+
 
   "Sending a GET request to FileUploadController when both continueUrl and back url are none" should {
     "return a 200 when a matching continue Url and backUrl are returned from keystore" in {
@@ -276,6 +323,9 @@ class FileUploadControllerSpec extends ControllerSpec {
         .thenReturn(Option(testUrl))
       when(mockKeyStoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.continueUrl))(Matchers.any(), Matchers.any()))
         .thenReturn(Option(testUrl))
+      when(mockFileUploadService.storeRedirectParameterIfValid(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
+        .thenReturn(true)
+
       showWithSessionAndAuth(TestController.show(None, None))(
         result => {
           status(result) shouldBe OK

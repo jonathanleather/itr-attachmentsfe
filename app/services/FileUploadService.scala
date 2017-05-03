@@ -19,11 +19,13 @@ package services
 import akka.util.ByteString
 import auth.TAVCUser
 import common.{Constants, FileHelper, KeystoreKeys}
-import connectors.{AttachmentsConnector, FileUploadConnector, S4LConnector}
+import config.FrontendAppConfig
+import connectors.{AttachmentsConnector, FileUploadConnector, KeystoreConnector, S4LConnector}
 import models.fileUpload.{Envelope, EnvelopeFile, MetadataModel}
 import play.api.Logger
 import play.mvc.Http.Status._
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.binders.ContinueUrl
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,6 +33,7 @@ object FileUploadService extends FileUploadService {
   override lazy val fileUploadConnector = FileUploadConnector
   override lazy val s4lConnector = S4LConnector
   override lazy val attachmentsConnector = AttachmentsConnector
+  override def baseUrl: String = FrontendAppConfig.baseUrl
 }
 
 trait FileUploadService {
@@ -44,7 +47,22 @@ trait FileUploadService {
   val withinFileSize = true
   val fileIsUnique = true
   val fileWithinEnvelopeLimit = true
+  def baseUrl: String
 
+  def storeRedirectParameterIfValid(parameter: String, keyStoreKey:String, keyStoreConnector:KeystoreConnector)
+                                   (implicit hc: HeaderCarrier, ex: ExecutionContext): Boolean = {
+    if (parameter.length > 0) {
+      val validatedBackUrl = ContinueUrl(parameter)
+      if (validatedBackUrl.url.startsWith(baseUrl)) {
+        keyStoreConnector.saveFormData(keyStoreKey, validatedBackUrl.url).map {
+          result => result
+        }
+        true
+      }
+      else false
+    }
+    else true
+  }
 
   def validateFile(envelopeID: String, fileName: String, fileSize: Int)
                   (implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Seq[Boolean]] = {

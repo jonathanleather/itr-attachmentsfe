@@ -19,7 +19,7 @@ package services
 import akka.util.ByteString
 import auth.{TAVCUser, ggUser}
 import common.{Constants, KeystoreKeys}
-import connectors.{AttachmentsConnector, FileUploadConnector, S4LConnector}
+import connectors.{AttachmentsConnector, FileUploadConnector, KeystoreConnector, S4LConnector}
 import models.fileUpload.{Envelope, EnvelopeFile, Metadata}
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -28,6 +28,7 @@ import org.scalatest.mock.MockitoSugar
 import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
@@ -39,6 +40,7 @@ class FileUploadServiceSpec extends UnitSpec with MockitoSugar with WithFakeAppl
   val internalId = "Int-312e5e92-762e-423b-ac3d-8686af27fdb5"
   val mockFileUploadConnector = mock[FileUploadConnector]
   val mockS4LConnector = mock[S4LConnector]
+  val mockKeystoreConnector = mock[KeystoreConnector]
   val mockAttachmentsConnector = mock[AttachmentsConnector]
   val envelopeID = "00000000-0000-0000-0000-000000000000"
   val fileID = 1
@@ -243,6 +245,9 @@ class FileUploadServiceSpec extends UnitSpec with MockitoSugar with WithFakeAppl
     override lazy val fileUploadConnector = mockFileUploadConnector
     override lazy val s4lConnector = mockS4LConnector
     override lazy val attachmentsConnector = mockAttachmentsConnector
+    override lazy val baseUrl = "https://www.my.pretenddomain.co.uk/"
+
+
   }
 
   "FileUploadService" should {
@@ -261,7 +266,43 @@ class FileUploadServiceSpec extends UnitSpec with MockitoSugar with WithFakeAppl
 
   }
 
-  "validateFile" when {
+
+    "storeRedirectParameterIfValid" should {
+      lazy val result = TestService.storeRedirectParameterIfValid("https://www.my.pretenddomain.co.uk/my-target-url", "test", mockKeystoreConnector)
+      "return true if the parameter starts with the expected service base url from the configuration and does not start with //" in {
+        when(mockKeystoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
+          .thenReturn(Future.successful(CacheMap("", Map())))
+        result shouldBe true
+      }
+    }
+
+  "storeRedirectParameterIfValid" should {
+    lazy val result = TestService.storeRedirectParameterIfValid("https://www.my.NOTMYpretenddomain.co.uk/my-target-url", "test", mockKeystoreConnector)
+    "return false if the parameter does not start with the expected service base url from the configuration and does not start with //" in {
+      when(mockKeystoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(CacheMap("", Map())))
+      result shouldBe false
+    }
+  }
+
+  "storeRedirectParameterIfValid" should {
+    lazy val result = TestService.storeRedirectParameterIfValid("", "test", mockKeystoreConnector)
+    "return true if the parameter is empty as nothign to validate" in {
+      when(mockKeystoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(CacheMap("", Map())))
+      result shouldBe true
+    }
+  }
+
+    "storeRedirectParameterIfValid" should {
+      "throw an exception if parameter starts with with //" in {
+        intercept[IllegalArgumentException] {
+          TestService.storeRedirectParameterIfValid("//www.my.pretenddomain.co.uk/my-target-url", "test", mockKeystoreConnector)
+        }
+      }
+    }
+
+    "validateFile" when {
 
     "the file name is unique, the file size is at limit and the file type is xls" should {
 
