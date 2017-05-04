@@ -59,7 +59,10 @@ trait FileUploadService {
         }
         true
       }
-      else false
+      else {
+        Logger.warn(s"[FileUploadService][storeRedirectParameterIfValid] Error ${parameter} is not a valid redirect URL.")
+        false
+      }
     }
     else true
   }
