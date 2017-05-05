@@ -33,7 +33,6 @@ import views.html.fileUpload.FileUpload
 import uk.gov.hmrc.play.http.HeaderCarrier
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
-import uk.gov.hmrc.play.binders
 
 
 import scala.concurrent.Future
@@ -86,7 +85,9 @@ trait FileUploadController extends FrontendController with AuthorisedAndEnrolled
     def routeRequest(url: Option[String], envelopeId: String): Future[Result] = {
       url match {
         case Some(data) if data.length > 0 =>
-          keyStoreConnector.clearKeystore()
+          keyStoreConnector.clearKeystore().map{
+            result => result
+          }
           Future.successful(Redirect(s"$data?envelopeId=$envelopeId"))
         case _ =>
           keyStoreConnector.clearKeystore()

@@ -51,9 +51,9 @@ trait FileUploadService {
 
   def storeRedirectParameterIfValid(parameter: String, keyStoreKey:String, keyStoreConnector:KeystoreConnector)
                                    (implicit hc: HeaderCarrier, ex: ExecutionContext): Boolean = {
-    if (parameter.length > 0) {
+    if (parameter.nonEmpty) {
       val validatedBackUrl = ContinueUrl(parameter)
-      if (validatedBackUrl.url.startsWith(baseUrl)) {
+      if (validatedBackUrl.isRelativeUrl || validatedBackUrl.url.startsWith(baseUrl)) {
         keyStoreConnector.saveFormData(keyStoreKey, validatedBackUrl.url).map {
           result => result
         }
