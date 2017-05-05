@@ -52,16 +52,16 @@ trait FileUploadService {
   def storeRedirectParameterIfValid(parameter: String, keyStoreKey:String, keyStoreConnector:KeystoreConnector)
                                    (implicit hc: HeaderCarrier, ex: ExecutionContext): Boolean = {
     if (parameter.nonEmpty) {
-      val validatedBackUrl = ContinueUrl(parameter)
-      if (validatedBackUrl.isRelativeUrl || validatedBackUrl.url.startsWith(baseUrl)) {
-        keyStoreConnector.saveFormData(keyStoreKey, validatedBackUrl.url).map {
+      val validatedUrl = ContinueUrl(parameter)
+      if (validatedUrl.isRelativeUrl || validatedUrl.url.startsWith(baseUrl)) {
+        keyStoreConnector.saveFormData(keyStoreKey, validatedUrl.url).map {
           result => result
         }
         true
       }
       else
       {
-        Logger.warn(s"[FileUploadService][storeRedirectParameterIfValid] Error $parameter is not a valid redirect URL.")
+        Logger.warn(s"[FileUploadService][storeRedirectParameterIfValid] Error redirect url $parameter is not a valid redirect URL.")
         false
       }
     }
