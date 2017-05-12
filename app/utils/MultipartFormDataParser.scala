@@ -26,6 +26,7 @@ import play.core.parsers.Multipart.{FileInfo, FilePartHandler}
 
 object MultipartFormDataParser {
 
+  //$COVERAGE-OFF$
   def handleFilePartAsFile: FilePartHandler[ByteString] = {
     case FileInfo(partName, filename, contentType) =>
       val baos = new java.io.ByteArrayOutputStream()
@@ -39,5 +40,6 @@ object MultipartFormDataParser {
         FilePart(partName, filename, contentType, ByteString(outputStream.toByteArray))
       }(play.api.libs.concurrent.Execution.defaultContext)
   }
+  //$COVERAGE-ON$
 
 }

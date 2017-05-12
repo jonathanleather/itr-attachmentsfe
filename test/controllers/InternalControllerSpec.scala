@@ -22,8 +22,16 @@ import controllers.internal.InternalController
 import play.api.libs.json.Json
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.EnrolmentConnector
+import org.mockito.Matchers
 import services.FileUploadService
 import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.play.http.{Upstream5xxResponse, HeaderCarrier, HttpResponse}
+import org.mockito.Matchers
+import org.mockito.Mockito._
+import play.api.http
+import scala.concurrent.Future
+import play.api.test.Helpers._
+
 class InternalControllerSpec extends ControllerSpec {
 
   val envelopeID = "00000000-0000-0000-0000-000000000000"
@@ -52,23 +60,20 @@ class InternalControllerSpec extends ControllerSpec {
     }
   }
 
-//TODO:fix test
-//  "A reuests to CloseEnvelope when parameters are passed" should {
-//    "return a OK" in {
-//
-//      when(mockFileUploadService.closeEnvelope(Matchers.eq(tavcReferenceId), Matchers.eq(envelopeID), Matchers.eq(oid))(Matchers.any(), Matchers.any()))
-//        .thenReturn(Future.successful(HttpResponse(CREATED)))
-//
-//      when(mockFileUploadService. (Matchers.eq(tavcReferenceId), Matchers.eq(envelopeID), Matchers.eq(oid))(Matchers.any(), Matchers.any()))
-//        .thenReturn(Future.successful(HttpResponse(CREATED)))
-//
-//      //when(mockS4lConnector.saveFormData(Matchers.eq(oid), Matchers.eq(KeystoreKeys.envelopeID), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(cacheMap)
-//      when(mockS4lConnector.saveFormData(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(cacheMap)
-//
-//      lazy val result = await(TestController.closeEnvelope(tavcReferenceId, envelopeID, oid)(fakeRequest))
-//
-//      status(result) shouldBe Future.successful(OK)
-//    }
-//  }
+  "A reuests to CloseEnvelope when parameters are passed" should {
+
+    lazy val result = await(TestController.closeEnvelope(tavcReferenceId, envelopeID, oid)(fakeRequest))
+    "return a OK" in {
+      when(mockFileUploadService.closeEnvelope(Matchers.eq(tavcReferenceId), Matchers.eq(envelopeID), Matchers.eq(oid))(Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(HttpResponse(OK)))
+
+      when(mockFileUploadService.closeEnvelope(Matchers.eq(tavcReferenceId), Matchers.eq(envelopeID), Matchers.eq(oid))(Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(HttpResponse(CREATED)))
+
+      when(mockS4lConnector.saveFormData(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(cacheMap)
+
+      status(result)  shouldBe OK
+    }
+  }
 
 }
