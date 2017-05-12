@@ -86,7 +86,7 @@ class ClearCacheControllerSpec extends ControllerSpec{
       showWithSessionAndAuth(TestClearCacheController.clearCache())(
         result => {
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result) shouldBe Some(TestClearCacheController.applicationConfig.subscriptionUrl)
+          redirectLocation(result) shouldBe Some(TestClearCacheController.applicationConfig.introductionUrl)
         }
       )
     }

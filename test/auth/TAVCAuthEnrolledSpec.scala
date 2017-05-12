@@ -87,7 +87,7 @@ class TAVCAuthEnrolledSpec extends UnitSpec with WithFakeApplication with Mockit
       when(AuthEnrolledTestController.enrolmentConnector.getTAVCEnrolment(Matchers.any())(Matchers.any()))
         .thenReturn(Future.successful(None))
       val result = AuthEnrolledTestController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId))
-      redirectLocation(result) shouldBe Some("/investment-tax-relief-subscription/")
+      redirectLocation(result) shouldBe Some(MockConfig.introductionUrl)
     }
   }
 

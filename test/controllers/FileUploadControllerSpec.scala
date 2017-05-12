@@ -96,7 +96,7 @@ class FileUploadControllerSpec extends ControllerSpec {
       showWithSessionAndAuth(TestController.show(Some("continue"), Some("back")))(
         result => {
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result) shouldBe Some(FrontendAppConfig.subscriptionUrl)
+          redirectLocation(result) shouldBe Some(FrontendAppConfig.introductionUrl)
         }
       )
     }
@@ -198,7 +198,7 @@ class FileUploadControllerSpec extends ControllerSpec {
       submitWithSessionAndAuth(TestController.submit)(
         result => {
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result) shouldBe Some(FrontendAppConfig.subscriptionUrl)
+          redirectLocation(result) shouldBe Some(FrontendAppConfig.introductionUrl)
         }
       )
     }

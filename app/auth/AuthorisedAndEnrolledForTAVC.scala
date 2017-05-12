@@ -33,7 +33,7 @@ trait AuthorisedAndEnrolledForTAVC extends Actions {
   val enrolmentConnector: EnrolmentConnector
   val applicationConfig: AppConfig
   val postSignInRedirectUrl: String = applicationConfig.introductionUrl
-  val notEnrolledRedirectUrl: String = applicationConfig.subscriptionUrl
+  val notEnrolledRedirectUrl: String = applicationConfig.introductionUrl
 
   private type PlayRequest = Request[AnyContent] => Result
   private type UserRequest = TAVCUser => PlayRequest

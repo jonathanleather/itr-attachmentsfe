@@ -86,7 +86,7 @@ class FileDeleteControllerSpec extends ControllerSpec{
       showWithSessionAndAuth(TestFileDeleteController.show(fileId))(
         result => {
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result) shouldBe Some(TestFileDeleteController.applicationConfig.subscriptionUrl)
+          redirectLocation(result) shouldBe Some(TestFileDeleteController.applicationConfig.introductionUrl)
         }
       )
     }
@@ -181,7 +181,7 @@ class FileDeleteControllerSpec extends ControllerSpec{
       submitWithSessionAndAuth(TestFileDeleteController.submit())(
         result => {
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result) shouldBe Some(TestFileDeleteController.applicationConfig.subscriptionUrl)
+          redirectLocation(result) shouldBe Some(TestFileDeleteController.applicationConfig.introductionUrl)
         }
       )
     }
