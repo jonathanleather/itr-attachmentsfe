@@ -41,5 +41,6 @@ trait FileUploadConnector {
     WS.url(s"$serviceURL/upload/envelopes/$envelopeId/files/$fileId")
       .withHeaders(hc.copy(otherHeaders = Seq("CSRF-token" -> "nocheck")).headers: _*).post(multipartFormData)
   }
+  // $COVERAGE-ON$
 
 }
