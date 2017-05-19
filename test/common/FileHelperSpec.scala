@@ -134,6 +134,29 @@ class FileHelperSpec extends UnitSpec {
       FileHelper.isAllowableFileType("test.jpeg.doc") shouldBe false
     }
 
+    "return the correct values for the types" in {
+
+      FileHelper.PDF shouldBe "application/pdf"
+      FileHelper.XLS shouldBe  "application/vnd.ms-excel"
+      FileHelper.XLSX shouldBe  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      FileHelper.JPG shouldBe  "image/jpeg"
+      FileHelper.DEFAULT shouldBe  "application/octet-stream"
+
+
+      class TestFileHelper extends FileHelper{
+
+      }
+
+      val testHelper = new TestFileHelper()
+
+      testHelper.PDF shouldBe "application/pdf"
+      testHelper.XLS shouldBe  "application/vnd.ms-excel"
+      testHelper.XLSX shouldBe  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      testHelper.JPG shouldBe  "image/jpeg"
+      testHelper.DEFAULT shouldBe  "application/octet-stream"
+
+    }
+
   }
 
 }
