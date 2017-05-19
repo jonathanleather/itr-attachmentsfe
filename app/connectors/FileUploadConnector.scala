@@ -42,4 +42,5 @@ trait FileUploadConnector {
       .withHeaders(hc.copy(otherHeaders = Seq("CSRF-token" -> "nocheck")).headers: _*).post(multipartFormData)
   }
 
+  // $COVERAGE-ON$
 }

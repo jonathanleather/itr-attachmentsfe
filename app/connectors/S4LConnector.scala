@@ -47,9 +47,4 @@ trait S4LConnector {
   def clearCache()(implicit hc : HeaderCarrier, user: TAVCUser) : Future[HttpResponse] = {
     shortLivedCache.remove(user.internalId)
   }
-
-  def fetch()(implicit hc : HeaderCarrier, user: TAVCUser) : Future[Option[CacheMap]] = {
-    shortLivedCache.fetch(user.internalId)
-  }
-
 }

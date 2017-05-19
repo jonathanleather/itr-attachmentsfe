@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+//$COVERAGE-OFF$
 package utils
 
 import java.io.ByteArrayOutputStream
@@ -41,3 +42,4 @@ object MultipartFormDataParser {
   }
 
 }
+//$COVERAGE-ON$
