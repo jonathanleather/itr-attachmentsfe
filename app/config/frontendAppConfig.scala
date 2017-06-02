@@ -59,6 +59,6 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
   override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
 
   override lazy val attachmentsUrl = baseUrl("investment-tax-relief-attachments")
-  override lazy val fileUploadUrl: String = loadConfig("file-upload.url")
+  override lazy val fileUploadUrl: String = baseUrl("file-upload")
   override lazy val baseUrl: String = loadConfig("location-base.url")
 }
