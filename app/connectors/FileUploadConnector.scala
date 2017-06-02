@@ -38,7 +38,6 @@ trait FileUploadConnector {
   // $COVERAGE-OFF$
   def addFileContent(envelopeId: String, fileId: Int, fileName: String, content: ByteString, typeOfContent: String)
                     (implicit hc: HeaderCarrier): Future[WSResponse] = {
-    Logger.warn(s"$serviceURL/file-upload/upload/envelopes/$envelopeId/files/$fileId")
     val multipartFormData = Source(FilePart("attachment", fileName, Some(typeOfContent), Source(content :: List())) :: DataPart("", "") :: List())
     WS.url(s"$serviceURL/file-upload/upload/envelopes/$envelopeId/files/$fileId")
       .withHeaders(hc.copy(otherHeaders = Seq("CSRF-token" -> "nocheck")).headers: _*).post(multipartFormData)
