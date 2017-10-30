@@ -40,7 +40,7 @@ trait FileHelper {
         case "jpeg" => JPG
         case "xls" => XLS
         case "xlsx" => XLSX
-        case "csv" => CSV
+        case "csv" => CSV // for testing the upload csv read content
         case _ => DEFAULT
       }
       case None => DEFAULT
