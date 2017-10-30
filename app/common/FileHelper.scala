@@ -29,7 +29,6 @@ trait FileHelper {
   final val XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   final val JPG = "image/jpeg"
   final val DEFAULT = "application/octet-stream"
-  final val CSV = "text/csv"
 
   def getMimeType(filename: String): String = {
 
@@ -40,7 +39,6 @@ trait FileHelper {
         case "jpeg" => JPG
         case "xls" => XLS
         case "xlsx" => XLSX
-        case "csv" => CSV
         case _ => DEFAULT
       }
       case None => DEFAULT
@@ -48,7 +46,7 @@ trait FileHelper {
   }
 
   def isAllowableFileType(fileName: String): Boolean = {
-    fileName.matches("""^.*\.(jpg|JPG|jpeg|JPEG|xls|XLS|pdf|PDF|xlsx|XLSX|csv|CSV)$""")
+    fileName.matches("""^.*\.(jpg|JPG|jpeg|JPEG|xls|XLS|pdf|PDF|xlsx|XLSX)$""")
   }
 
   def withinEnvelopeMaximumSize(existingFiles: Seq[EnvelopeFile], additionalFileSize: Int): Boolean = {
