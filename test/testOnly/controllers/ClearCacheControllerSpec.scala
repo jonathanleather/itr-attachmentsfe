@@ -27,7 +27,7 @@ import org.mockito.Matchers
 import org.mockito.Mockito._
 import play.api.test.Helpers._
 import testOnly.controllers.ClearCacheController
-import uk.gov.hmrc.play.http.{HttpResponse, UserId}
+import uk.gov.hmrc.http.HttpResponse
 
 class ClearCacheControllerSpec extends ControllerSpec{
 

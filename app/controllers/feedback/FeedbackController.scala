@@ -28,14 +28,16 @@ import config.FrontendGlobal.internalServerErrorTemplate
 import connectors.EnrolmentConnector
 import views.html.feedback.feedback_thankyou
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
-import uk.gov.hmrc.play.frontend.controller.{FrontendController, UnauthorisedAction}
+import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.frontend.filters.SessionCookieCryptoFilter
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpPost, _}
+import uk.gov.hmrc.play.http._
 import uk.gov.hmrc.play.partials._
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, HttpPost, HttpReads, HttpResponse}
+import uk.gov.hmrc.play.http.ws.WSHttp
 
 object FeedbackController extends FeedbackController with PartialRetriever {
 
@@ -65,7 +67,7 @@ trait FeedbackController extends FrontendController with AuthorisedAndEnrolledFo
   implicit val formPartialRetriever: FormPartialRetriever
   implicit val cachedStaticHtmlPartialRetriever: CachedStaticHtmlPartialRetriever
 
-  def httpPost: HttpPost
+  def httpPost: WSHttp
   def contactFormReferer(implicit request: Request[AnyContent]): String
   def localSubmitUrl(implicit request: Request[AnyContent]): String
 
@@ -92,8 +94,7 @@ trait FeedbackController extends FrontendController with AuthorisedAndEnrolledFo
   def submit: Action[AnyContent] = AuthorisedAndEnrolled.async {
     implicit user => implicit request =>
       request.body.asFormUrlEncoded.map { formData =>
-        httpPost.POSTForm[HttpResponse](feedbackHmrcSubmitPartialUrl, formData)(rds = readPartialsForm, hc = partialsReadyHeaderCarrier).map {
-          resp =>
+        httpPost.POSTForm[HttpResponse](feedbackHmrcSubmitPartialUrl, formData)(readPartialsForm, partialsReadyHeaderCarrier, implicitly).map {resp =>
             resp.status match {
               case HttpStatus.OK => Redirect(routes.FeedbackController.thankyou()).withSession(request.session + (TICKET_ID -> resp.body))
               case HttpStatus.BAD_REQUEST => BadRequest(views.html.feedback.feedback(feedbackFormPartialUrl, Some(Html(resp.body))))

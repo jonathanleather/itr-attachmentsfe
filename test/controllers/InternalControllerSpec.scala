@@ -24,11 +24,11 @@ import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.EnrolmentConnector
 import services.FileUploadService
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.play.http.HttpResponse
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import scala.concurrent.Future
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.HttpResponse
 
 class InternalControllerSpec extends ControllerSpec {
 

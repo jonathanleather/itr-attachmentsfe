@@ -24,10 +24,10 @@ import connectors.{AttachmentsConnector, FileUploadConnector, KeystoreConnector,
 import models.fileUpload.{Envelope, EnvelopeFile, MetadataModel}
 import play.api.Logger
 import play.mvc.Http.Status._
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.binders.ContinueUrl
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
 
 object FileUploadService extends FileUploadService {
   override lazy val fileUploadConnector = FileUploadConnector
