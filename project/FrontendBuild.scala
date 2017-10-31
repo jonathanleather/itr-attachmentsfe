@@ -19,14 +19,8 @@ private object AppDependencies {
   import play.sbt.PlayImport._
   import play.core.PlayVersion
 
-  private val playHealthVersion = "2.1.0"
-  private val logbackJsonLoggerVersion = "3.1.0"
   private val frontendBootstrapVersion = "8.9.0"
-  private val govukTemplateVersion = "5.1.0"
-  private val playUiVersion = "7.4.0"
   private val playPartialsVersion = "6.1.0"
-  private val playAuthorisedFrontendVersion = "6.4.0"
-  private val playConfigVersion = "4.3.0"
   private val hmrcTestVersion = "2.3.0"
   private val cachingClientVersion = "7.0.0"
   private val playConditionalMappingVersion = "0.2.0"
@@ -35,8 +29,7 @@ private object AppDependencies {
   private val pegDownVersion = "1.6.0"
   private val jSoupVersion = "1.8.3"
   private val mockitoAll = "1.9.5"
-  private val playGraphiteVersion = "3.2.0"
-
+  
   val compile = Seq(
     ws,
     "uk.gov.hmrc" %% "frontend-bootstrap" % frontendBootstrapVersion,
