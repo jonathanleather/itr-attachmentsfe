@@ -23,11 +23,11 @@ import org.mockito.Matchers
 import org.mockito.Mockito._
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache, ShortLivedCache}
-import uk.gov.hmrc.play.http.logging.SessionId
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import play.api.test.Helpers._
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
+import uk.gov.hmrc.http.logging.SessionId
 
 class S4LConnectorSpec extends BaseSpec {
 
@@ -43,7 +43,7 @@ class S4LConnectorSpec extends BaseSpec {
   "fetchAndGetFormData" should {
 
     "fetch and get from keystore" in {
-      when(TestS4LConnector.shortLivedCache.fetchAndGetEntry[EnvelopeFile](Matchers.anyString(), Matchers.any())(Matchers.any(), Matchers.any()))
+      when(TestS4LConnector.shortLivedCache.fetchAndGetEntry[EnvelopeFile](Matchers.anyString(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(Option(testModel)))
       val result = TestS4LConnector.fetchAndGetFormData[EnvelopeFile]("test")
       await(result) shouldBe Some(testModel)
@@ -53,7 +53,7 @@ class S4LConnectorSpec extends BaseSpec {
   "saveFormData" should {
     "save data to keystore" in {
       val returnedCacheMap = CacheMap("test", Map("data" -> Json.toJson(testModel)))
-      when(TestS4LConnector.shortLivedCache.cache[EnvelopeFile](Matchers.anyString(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
+      when(TestS4LConnector.shortLivedCache.cache[EnvelopeFile](Matchers.anyString(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(returnedCacheMap))
       val result = TestS4LConnector.saveFormData("test", testModel)
       await(result) shouldBe returnedCacheMap
@@ -63,7 +63,7 @@ class S4LConnectorSpec extends BaseSpec {
   "clearS4Later" should {
 
     "clear the data from keystore" in {
-      when(TestS4LConnector.shortLivedCache.remove(Matchers.any())(Matchers.any[HeaderCarrier]())).thenReturn(Future.successful(HttpResponse(OK)))
+      when(TestS4LConnector.shortLivedCache.remove(Matchers.any())(Matchers.any[HeaderCarrier](), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
       val result = TestS4LConnector.clearCache()
       await(result).status shouldBe OK
     }

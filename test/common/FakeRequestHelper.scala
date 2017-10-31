@@ -22,9 +22,9 @@ import akka.util.ByteString
 import auth._
 import play.api.mvc._
 import play.api.test.FakeRequest
-import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.SessionKeys
 
 trait FakeRequestHelper {
   lazy val sessionId = UUID.randomUUID.toString

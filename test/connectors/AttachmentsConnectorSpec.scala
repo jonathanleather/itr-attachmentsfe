@@ -38,19 +38,23 @@ import config.WSHttp
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.play.http._
-import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.http.ws.WSHttp
 
 import scala.concurrent.Future
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
+import uk.gov.hmrc.http.logging.SessionId
+import uk.gov.hmrc.http.{ HttpGet, HttpPost, HttpDelete, HttpPut }
 
 class AttachmentsConnectorSpec extends BaseSpec {
 
   val internalId = "Int-312e5e92-762e-423b-ac3d-8686af27fdb5"
 
+  trait MockHttp extends HttpGet with HttpPost with HttpPut with HttpDelete
+
   object TestAttachmentsConnector extends AttachmentsConnector with FakeRequestHelper {
     override val serviceUrl = MockConfig.attachmentsUrl
-    override val http = mock[WSHttp]
+    override val http = mock[MockHttp]
   }
 
   implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("1234")))
@@ -69,7 +73,7 @@ class AttachmentsConnectorSpec extends BaseSpec {
       "return a Status OK (200) response" in {
         when(TestAttachmentsConnector.http.POSTEmpty[HttpResponse](
           Matchers.eq(s"${TestAttachmentsConnector.serviceUrl}/investment-tax-relief-attachments/file-upload/create-envelope"))
-          (Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
+          (Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
         await(result) match {
           case response => response.status shouldBe OK
           case _ => fail("No response was received, when one was expected")
@@ -85,7 +89,7 @@ class AttachmentsConnectorSpec extends BaseSpec {
       "return a Status OK (200) response" in {
         when(TestAttachmentsConnector.http.GET[HttpResponse](
           Matchers.eq(s"${TestAttachmentsConnector.serviceUrl}/investment-tax-relief-attachments/file-upload/envelope/$envelopeId/get-envelope-status"))
-          (Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
+          (Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
         await(result) match {
           case response => response.status shouldBe OK
           case _ => fail("No response was received, when one was expected")
@@ -100,7 +104,7 @@ class AttachmentsConnectorSpec extends BaseSpec {
       "return a Status OK (200) response" in {
         when(TestAttachmentsConnector.http.POSTEmpty[HttpResponse](
           Matchers.eq(s"${TestAttachmentsConnector.serviceUrl}/investment-tax-relief-attachments/file-upload/envelope/$envelopeId/close-envelope"))
-          (Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
+          (Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
         await(result) match {
           case response => response.status shouldBe OK
           case _ => fail("No response was received, when one was expected")
@@ -116,7 +120,7 @@ class AttachmentsConnectorSpec extends BaseSpec {
       "return a Status OK (200) response" in {
         when(TestAttachmentsConnector.http.DELETE[HttpResponse](
           Matchers.eq(s"${TestAttachmentsConnector.serviceUrl}/investment-tax-relief-attachments/file-upload/envelope/$envelopeId/file/$fileId/delete-file"))
-          (Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
+          (Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
         await(result) match {
           case response => response.status shouldBe OK
           case _ => fail("No response was received, when one was expected")

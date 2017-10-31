@@ -26,7 +26,7 @@ import org.mockito.Matchers
 import org.mockito.Mockito._
 import services.FileUploadService
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.http.HttpResponse
+import uk.gov.hmrc.http.HttpResponse
 
 class FileDeleteControllerSpec extends ControllerSpec{
 

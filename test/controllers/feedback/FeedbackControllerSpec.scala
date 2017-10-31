@@ -24,11 +24,11 @@ import play.api.http.Status
 import play.api.mvc.{AnyContent, Request, RequestHeader}
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.play.http.ws.WSHttp
-import uk.gov.hmrc.play.http.{HttpGet, HttpPost, HttpResponse}
 import uk.gov.hmrc.play.partials.{CachedStaticHtmlPartialRetriever, FormPartialRetriever, HtmlPartial}
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.play.http.ws.WSHttp
 
 class FeedbackControllerSpec extends ControllerSpec {
 
@@ -36,7 +36,7 @@ class FeedbackControllerSpec extends ControllerSpec {
 
   object TestController extends FeedbackController {
     override implicit val cachedStaticHtmlPartialRetriever: CachedStaticHtmlPartialRetriever = new CachedStaticHtmlPartialRetriever {
-      override def httpGet: HttpGet = ???
+      override def httpGet = mockHttp
 
       override def getPartialContent(url: String, templateParameters: Map[String, String], errorMessage: Html)(implicit request: RequestHeader): Html =
         Html("")
@@ -44,13 +44,13 @@ class FeedbackControllerSpec extends ControllerSpec {
     override implicit val formPartialRetriever: FormPartialRetriever = new FormPartialRetriever {
       override def crypto: (String) => String = ???
 
-      override def httpGet: HttpGet = ???
+      override def httpGet = mockHttp
 
       override def getPartialContent(url: String, templateParameters: Map[String, String], errorMessage: Html)(implicit request: RequestHeader): Html = Html("")
     }
 
     protected def loadPartial(url: String)(implicit request: RequestHeader): HtmlPartial = ???
-    override def httpPost: HttpPost = mockHttp
+    override def httpPost = mockHttp
     override def localSubmitUrl(implicit request: Request[AnyContent]): String = ""
     override def contactFormReferer(implicit request: Request[AnyContent]): String = request.headers.get(REFERER).getOrElse("")
 
@@ -60,7 +60,7 @@ class FeedbackControllerSpec extends ControllerSpec {
   }
 
   def setupMocks(status: Int = Status.OK, response: Option[String] = None): Unit =
-    when(mockHttp.POSTForm[HttpResponse](Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
+    when(mockHttp.POSTForm[HttpResponse](Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
       .thenReturn(Future.successful(HttpResponse(status, responseString = response)))
 
   "GET /feedback" should {
@@ -74,7 +74,7 @@ class FeedbackControllerSpec extends ControllerSpec {
 
   "POST /feedback" should {
     "return form with thank you for valid selections" in {
-      setupMocks(response = Some("1234"))
+      setupMocks(Status.OK, Some("1234"))
       mockEnrolledRequest()
       submitWithSessionAndAuth(TestController.submit)(
         result => redirectLocation(result) shouldBe Some(routes.FeedbackController.thankyou().url)

@@ -26,6 +26,7 @@ import play.api.mvc.MultipartFormData.{DataPart, FilePart}
 import play.api.Play.current
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 object FileUploadConnector extends FileUploadConnector {
   override lazy val serviceURL = FrontendAppConfig.fileUploadUrl

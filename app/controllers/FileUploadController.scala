@@ -30,12 +30,12 @@ import services.FileUploadService
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.{MultipartFormDataParser, Transformers}
 import views.html.fileUpload.FileUpload
-import uk.gov.hmrc.play.http.HeaderCarrier
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 object FileUploadController extends FileUploadController {
   override lazy val applicationConfig = FrontendAppConfig

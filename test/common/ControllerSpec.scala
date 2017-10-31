@@ -20,9 +20,9 @@ import auth.authModels.UserIDs
 import auth.{Enrolment, Identifier, TAVCUser, ggUser}
 import org.mockito.Matchers
 import org.mockito.Mockito._
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 trait ControllerSpec extends BaseSpec {
 

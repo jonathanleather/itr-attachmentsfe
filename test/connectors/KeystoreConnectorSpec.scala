@@ -22,11 +22,11 @@ import org.mockito.Matchers
 import org.mockito.Mockito._
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
-import uk.gov.hmrc.play.http.logging.SessionId
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import play.api.test.Helpers._
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
+import uk.gov.hmrc.http.logging.SessionId
 
 class KeystoreConnectorSpec extends BaseSpec {
 
@@ -40,7 +40,7 @@ class KeystoreConnectorSpec extends BaseSpec {
   "fetchAndGetFormData" should {
 
     "fetch and get from keystore" in {
-      when(TestKeyStoreConnector.sessionCache.fetchAndGetEntry[EnvelopeFile](Matchers.anyString())(Matchers.any(), Matchers.any()))
+      when(TestKeyStoreConnector.sessionCache.fetchAndGetEntry[EnvelopeFile](Matchers.anyString())(Matchers.any(), Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(Option(testModel)))
       val result = TestKeyStoreConnector.fetchAndGetFormData[EnvelopeFile]("test")
       await(result) shouldBe Some(testModel)
@@ -50,7 +50,7 @@ class KeystoreConnectorSpec extends BaseSpec {
   "saveFormData" should {
     "save data to keystore" in {
       val returnedCacheMap = CacheMap("test", Map("data" -> Json.toJson(testModel)))
-      when(TestKeyStoreConnector.sessionCache.cache[EnvelopeFile](Matchers.anyString(), Matchers.any())(Matchers.any(), Matchers.any()))
+      when(TestKeyStoreConnector.sessionCache.cache[EnvelopeFile](Matchers.anyString(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(returnedCacheMap))
       val result = TestKeyStoreConnector.saveFormData("test", testModel)
       await(result) shouldBe returnedCacheMap
@@ -60,7 +60,7 @@ class KeystoreConnectorSpec extends BaseSpec {
   "clearKeystore" should {
 
     "clear the data from keystore" in {
-      when(TestKeyStoreConnector.sessionCache.remove()(Matchers.any[HeaderCarrier]())).thenReturn(Future.successful(HttpResponse(OK)))
+      when(TestKeyStoreConnector.sessionCache.remove()(Matchers.any[HeaderCarrier](), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
       val result = TestKeyStoreConnector.clearKeystore()
       await(result).status shouldBe OK
     }
